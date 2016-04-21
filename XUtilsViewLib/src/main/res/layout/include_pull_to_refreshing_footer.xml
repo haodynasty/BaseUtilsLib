@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="8dp" >
+
+    <RelativeLayout 
+        android:id="@+id/drop_down_footer_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/pull_to_refresh_footer_height"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:background="@drawable/round_corner_footer_bg">
+	    <ImageView
+	        android:id="@+id/drop_down_list_footer_progress_bar"
+	        android:layout_toLeftOf="@+id/drop_down_list_footer_text"
+	        android:layout_width="60dip"
+	        android:layout_height="60dip"
+	        android:scaleType="centerInside"
+	        android:src="@drawable/ic_loading"
+	        android:visibility="gone" />
+	
+	    <TextView
+	        android:id="@+id/drop_down_list_footer_text"
+	        android:textColor="@color/text_content"
+	        android:background="@color/transparent"
+	        android:layout_width="wrap_content"
+	        android:layout_height="@dimen/drop_down_list_footer_button_height"
+	        android:layout_centerInParent="true"
+	        android:layout_marginLeft="@dimen/drop_down_list_footer_button_margin_left"
+	        android:gravity="center"
+	        android:textSize="@dimen/typeface_small_14"
+	        android:text="@string/drop_down_list_footer_default_text" />
+    </RelativeLayout>
+</RelativeLayout>

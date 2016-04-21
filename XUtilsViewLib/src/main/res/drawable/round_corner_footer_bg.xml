@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+
+    <corners
+        android:bottomLeftRadius="@dimen/round_filter_radius"
+        android:bottomRightRadius="@dimen/round_filter_radius"
+        android:topLeftRadius="@dimen/round_filter_radius"
+        android:topRightRadius="@dimen/round_filter_radius" />
+
+    <solid android:color="@color/bg_refresh_bottom" />
+
+</shape>

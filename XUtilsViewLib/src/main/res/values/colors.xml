@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- drop down list header font color -->
+    <color name="drop_down_list_header_font_color">#000000</color>
+    <!-- drop down list header second font color -->
+    <color name="drop_down_list_header_second_font_color">#000000</color>
+    <!-- drop down list footer font color -->
+    <color name="drop_down_list_footer_font_color">#000000</color>
+    <!-- ldrawer color -->
+    <color name="ldrawer_color">#FFFFFF</color>
+
+    <color name="transparent">#00000000</color><!-- 透明 -->
+    <color name="transparent_light">#e0000000</color><!-- 半透明 -->
+    <color name="white">#ffffff</color><!-- 白色 -->
+	<color name="black">#000000</color>
+	<color name="white_gray">#BEBEBE</color>
+	<color name="red">#993300</color>
+	<color name="gray">#888888</color>
+	<color name="blue">#3399ff</color>
+	<color name="green">#70A92D</color>
+	<color name="blue_light">#7EC0EE</color>
+	
+	<color name="background">#ffffff</color>
+	
+	<color name="text_title">#ff5f5f5f</color>
+    <color name="text_content">#ffa19d94</color>
+    <color name="text_desc">#ffbebbb4</color>
+    <color name="dialog_background">#fffbf6f2</color>
+    <color name="dialog_btn_press">#ffece5df</color>
+    <color name="dialog_btn_normal">#fffbf6f2</color>
+    <color name="dialog_item_normal">#fff7f1ec</color>
+    <color name="dialog_divider">#ffe8e0da</color>
+    <color name="menu_item_dark">#f2dee1e3</color>
+    
+    <color name="bg_bt_blue_normal">#03A9F4</color>
+    <color name="bg_bt_blue_press">#0288D1</color>
+    
+    <color name="bg_refresh_bottom">#ffece7da</color>
+</resources>

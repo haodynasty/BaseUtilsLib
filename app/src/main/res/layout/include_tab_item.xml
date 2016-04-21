@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TabItem_Layout" >
+    <TextView
+        android:id="@+id/tab_item_tv"
+        style="@style/Style.TabItem.Label"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal" />
+
+    <ImageView
+        android:id="@+id/tab_item_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@id/tab_item_tv"
+        android:layout_marginRight="-20.0dip"
+        android:layout_marginTop="5.0dip"
+        android:gravity="center"
+        android:minWidth="20.0dip"
+        android:src="@drawable/bg_msgtip_point"
+        android:visibility="gone" />
+</RelativeLayout>

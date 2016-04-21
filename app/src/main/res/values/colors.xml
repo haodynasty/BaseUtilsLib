@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- drop down list header font color -->
+    <color name="drop_down_list_header_font_color">#000000</color>
+    <!-- drop down list header second font color -->
+    <color name="drop_down_list_header_second_font_color">#000000</color>
+    <!-- drop down list footer font color -->
+    <color name="drop_down_list_footer_font_color">#000000</color>
+    <color name="radio_button_selected_color">#70A92D</color>
+    <color name="radio_button_unselected_color">@android:color/transparent</color>
+
+    <color name="background">#ffffff</color>
+	<color name="background_green">#70A92D</color>
+    <color name="background_normal">#F8F8F8</color>
+    <color name="background_normal_press">#ffece7da</color>
+    <color name="background_normal_selected">#fffff2ab</color>
+    <color name="transparent">#00000000</color><!-- 透明 -->
+    <color name="transparent_gray">#7DC0C0C0</color>
+    <color name="white">#ffffff</color><!-- 白色 -->
+	<color name="black">#000000</color>
+	<color name="white_gray">#BEBEBE</color>
+	<color name="red">#993300</color>
+	<color name="orange">#f08c42</color>
+	<color name="gray">#888888</color>
+	<color name="blue">#3399ff</color>
+	<color name="green">#70A92D</color>
+	<color name="green_light">#B1CD6F</color>
+	<color name="blue_light">#7EC0EE</color>
+	<color name="translucent_background">#80000000</color>
+	<color name="loading_green_color">#00963D</color>
+	<color name="bg_publish_mulipic">#ffeff2f6</color>
+	<color name="msg_editor_backgroud">#ffececec</color>
+	<color name="feed_text_note_transparent">#87b5bcc6</color>
+	<color name="chat_btn_submit_normal">#B1CD6F</color>
+    <color name="chat_btn_submit_press">#70A92D</color>
+	<color name="transparent_light">#e0000000</color><!-- 半透明 -->
+	 <color name="bottombar_text_normal_color">#ffa5a5a5</color>
+	
+	<!-- text color -->
+	<color name="text_gray">#ff888271</color>
+    <color name="font_publish_btntext">#ffb5bcc6</color>
+	<color name="text_color">#ff434343</color>
+	<color name="title_bar_bg">#E8E8E8</color><!--#DEDEDE -->
+	
+	<!-- view color -->
+	<color name="button_pressed_color">#468847</color> <!-- deep green -->
+	<color name="headbar_bg">#1A8D52</color>
+	<color name="line_dividingline">#ffd9d3c5</color>
+	<color name="maintab_text_normal">#888888</color>
+    <color name="maintab_text_selected_color">#70A92D</color>
+    <color name="bg_notice_bubble">#ffff9459</color>
+    <color name="bg_listitem_press">#ffece5df</color>
+    <color name="button_gray_bg">#999999</color>
+    <color name="button_gray_pressed_bg">#817F81</color>
+    <color name="bg_tab_color">#7EC0EE</color>
+    
+	<!-- ldrawer color -->
+	<color name="actionbar_color">#bf360c</color>
+    <color name="drawer_arrow_second_color">#303f9f</color>
+    
+    <color name="primary">#3f51b5</color>
+    <color name="primary_dark">#303f9f</color>
+    <color name="ripple">#F06292</color>
+    <color name="accent">#E91E63</color>
+    <color name="accent_pressed">#C2185B</color>
+    <color name="material_blue_500">#5677fc</color>
+</resources>

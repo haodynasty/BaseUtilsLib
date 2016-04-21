@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pro="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:padding="1dip">
+    <LinearLayout 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:padding="10dp"
+	    android:gravity="center"
+	    android:background="@drawable/bg_dialog_photo_download"
+	    android:orientation="vertical" >
+	    <com.plusub.lib.view.RoundProgressBar
+	        android:id="@+id/photo_download_progressbar"
+	        android:layout_width="70dip"
+	        android:layout_height="70dip"
+	        android:padding="30dp"
+	        android:layout_gravity="center_horizontal"
+	        
+	        pro:roundColor="@color/gray"
+	        pro:roundProgressColor="@color/green"
+	        pro:textColor="#ffcdcdcd"
+	        pro:roundWidth="5dip"
+	        pro:textSize="22sp" />
+	    <TextView 
+	        android:id="@+id/photo_tv_download_progress"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:textColor="#ffcdcdcd"
+	        android:textSize="@dimen/typeface_large_22"
+	        android:paddingLeft="15dp"
+	        android:paddingRight="15dp"
+	        android:text="10%"
+	        android:visibility="gone"/>
+		<TextView 
+	        android:id="@+id/photo_tv_download_size"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:textColor="#ffcdcdcd"
+	        android:textSize="@dimen/typeface_small_14"
+	        android:text="10kb"
+	         android:visibility="gone"/>
+	</LinearLayout>
+	<TextView
+            android:textColor="@color/red"
+            android:id="@+id/photo_tv_error"
+            android:textSize="@dimen/typeface_large_22"
+            android:text="@string/picture_read_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"/>
+
+    <TextView
+            android:id="@+id/photo_tv_wait"
+            android:textColor="@color/white"
+            android:textSize="@dimen/typeface_large_22"
+            android:text="@string/picture_wait_for_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="invisible"/>
+
+    <com.plusub.lib.view.photoview.PhotoView 
+        	android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/photo_content"
+            android:visibility="invisible"/>
+</FrameLayout>
+

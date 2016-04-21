@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TabItem_Layout" >
+
+    <TextView
+        android:id="@+id/main_tab_item_label2"
+        style="@style/Style.TabItem.Label"
+        android:layout_centerInParent="true"
+        android:drawableTop="@drawable/ic_tab_home"
+        android:gravity="center_horizontal"
+        android:text="@string/main_tab2" />
+
+    <TextView
+        android:id="@+id/main_tab_item_badge2"
+        style="@style/BottomTab_Notice_Bubble"
+        android:layout_alignRight="@id/main_tab_item_label2"
+        android:layout_marginRight="-12.0dip"
+        android:text="1"
+        android:visibility="invisible" />
+
+</RelativeLayout>

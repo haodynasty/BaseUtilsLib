@@ -1,0 +1,153 @@
+//from:http://blog.csdn.net/ls1110924/article/details/46470059
+//上传jcenter基本配置
+//配置方式可查看https://github.com/bintray/gradle-bintray-plugin
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+ext.archiveBaseName = PROJ_NAME
+
+def localReleaseDest = "${buildDir}/release/${version}"
+
+//上传到maven库基本配置
+group = PROJ_GROUP //pom的groupId参数
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        //pom.artifactId = PROJ_NAME  //pom的artifactId参数
+        //pom.groupId = PROJ_GROUP  //pom的groupId参数
+        //pom.packaging = 'aar' //打包方式
+        //pom.version = 'v1.0' //版本，默认project.version
+        pom {
+            project {
+                packaging 'aar'
+                // Add your description here
+                name PROJ_DESCRIPTION 	//项目描述
+                url PROJ_WEBSITEURL
+                // Set your license
+                licenses {
+                    license {
+                        name LICENSE_NAME
+                        url LICENSE_URL
+                    }
+                }
+                developers {
+                    developer {
+                        id DEVELOPER_ID		//填写的一些基本信息
+                        name DEVELOPER_NAME
+                        email DEVELOPER_EMAIL
+                    }
+                }
+                scm {
+                    connection PROJ_VCSURL
+                    developerConnection PROJ_VCSURL
+                    url PROJ_WEBSITEURL
+                }
+            }
+        }.writeTo("$project.rootDir/newpom.xml")
+    }
+}
+
+//---------下面是生成源码jar，javadoc的jar，已经html的javadoc---------
+//生成源码jar
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+    baseName = archiveBaseName
+}
+
+//生成html文档javadoc
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    //必须要有这一句，设定编码格式
+    options.encoding = "utf-8"
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    //classpath += project.files(configurations.compile.files,android.getBootClasspath().join(File.pathSeparator)
+}
+
+//生成文档jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    baseName = archiveBaseName
+    from javadoc.destinationDir
+}
+
+
+//-==========下面是生成jar库=========
+//删除已经存在的jar库
+task clearJar(type: Delete) {
+    println 'clear jar'
+    delete 'build/libs/'+archiveBaseName+'-'+version+'.jar'
+}
+
+//拷贝并重命名jar库到build/libs目录下
+task makeJar(type: Copy, dependsOn: clearJar) {
+    from('build/intermediates/bundles/release/')
+    into('build/libs')
+    include('classes.jar')
+    rename ('classes.jar', archiveBaseName+'-'+version+'.jar')
+}
+
+//生成jar库，注意：其实也可以生成aar（type：zip，extension='aar'）即可
+task buildJar(dependsOn: ['compileReleaseSources', clearJar], type: Jar) {
+    //appendix = "demo"
+    baseName = archiveBaseName
+    //version = "1.0.0"
+    //classifier = "release"
+
+    //后缀名
+    extension = "jar"
+    //最终的 Jar 包名，如果没设置，默认为 [baseName]-[appendix]-[version]-[classifier].[extension]
+    //archiveName = "AndroidJarDemo.jar"
+
+    //需打包的资源所在的路径集
+    def srcClassDir = [project.buildDir.absolutePath + "/intermediates/classes/release"];
+    //初始化资源路径集
+    from srcClassDir
+
+    //去除路径集下部分的资源
+    exclude "com/plusub/lib/BuildConfig.class"
+    exclude "com/plusub/lib/BuildConfig\$*.class"
+    exclude "com/plusub/lib/view/BuildConfig.class"
+    exclude "com/plusub/lib/view/BuildConfig\$*.class"
+    exclude "**/R.class"
+    exclude "**/R\$*.class"
+
+    //只导入资源路径集下的部分资源
+    //include "org/chaos/demo/jar/**/*.class"
+
+    //注: exclude include 支持可变长参数
+}
+
+//压缩包
+task zipRelease(type: Zip) {
+    from localReleaseDest
+    destinationDir buildDir
+    archiveName "release-${version}.zip"
+}
+
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+    //archives buildJar //上传jar方法
+    //archives file('Gradlelib.aar') 可以直接上传aar文件,默认也会处理
+}
+
+//上传到jcenter库
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = PROJ_NAME	//发布到JCenter上的项目名字
+        //desc = PROJ_DESCRIPTION
+        websiteUrl = PROJ_WEBSITEURL
+        vcsUrl = PROJ_VCSURL
+        licenses = ["Apache-2.0"]
+        publish = true
+        publicDownloadNumbers = true
+    }
+}

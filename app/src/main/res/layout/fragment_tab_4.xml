@@ -1,0 +1,15 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background_normal" 
+    android:orientation="vertical" >
+
+    <include
+         android:id="@id/common_head_layout"
+         layout="@layout/include_header" />
+     <TextView 
+        android:id="@+id/frament4_tv"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="测试页面"/>
+</LinearLayout>

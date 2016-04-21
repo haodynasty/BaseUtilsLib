@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+	
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/background_normal">
+
+        
+        <FrameLayout
+            android:id="@id/main_tab_frame"
+            android:layout_above="@id/main_tabwidget"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        
+        <LinearLayout
+            android:id="@id/main_tabwidget"
+            android:layout_width="fill_parent"
+            android:background="@drawable/ic_main_bottom_bg"
+            android:layout_height="@dimen/main_tab_bottomtabbar_height"
+            android:layout_alignParentBottom="true"
+            android:paddingTop="@dimen/space_small_buttom_margin_4"
+            android:orientation="horizontal" >
+
+            <include
+                android:id="@id/main_tab_layout_1"
+                layout="@layout/common_bottombar_tab_1" />
+
+            <include
+                android:id="@id/main_tab_layout_2"
+                layout="@layout/common_bottombar_tab_2" />
+
+            <include
+                android:id="@id/main_tab_layout_3"
+                layout="@layout/common_bottombar_tab_3" />
+
+            <include
+                android:id="@id/main_tab_layout_4"
+                layout="@layout/common_bottombar_tab_4" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

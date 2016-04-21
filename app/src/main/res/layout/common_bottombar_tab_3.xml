@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TabItem_Layout" >
+
+    <TextView
+        android:id="@+id/main_tab_item_label3"
+        style="@style/Style.TabItem.Label"
+        android:layout_centerInParent="true"
+        android:drawableTop="@drawable/ic_tab_home"
+        android:gravity="center_horizontal"
+        android:text="@string/main_tab3" />
+
+</RelativeLayout>

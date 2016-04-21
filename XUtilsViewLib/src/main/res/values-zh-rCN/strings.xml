@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="drop_down_list_header_pull_text">下拉可以刷新</string>
+    <string name="drop_down_list_header_default_text">下拉刷新…</string>
+    <string name="drop_down_list_header_release_text">放开以刷新…</string>
+    <string name="drop_down_list_header_loading_text">正在加载…</string>
+    <string name="drop_down_list_header_loading_start">开始刷新...</string>
+    <string name="drop_down_update_at">最后刷新时间：</string>
+    <string name="drop_down_list_footer_default_text">更多</string>
+    <string name="drop_down_list_footer_loading_text">正在加载数据</string>
+    <string name="drop_down_list_footer_no_more_text">没有更多数据</string>
+    
+</resources>

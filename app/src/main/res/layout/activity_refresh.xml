@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <include
+         android:id="@+id/common_head_layout"
+         layout="@layout/include_header" />
+     <com.plusub.lib.view.refresh.RefreshListView
+	        android:id="@id/common_listview"
+	        style="@style/SimpleListView"
+	        android:drawSelectorOnTop="false"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:divider="@color/line_dividingline"
+	        android:dividerHeight="0.0dip" />
+
+</LinearLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_normal"
+    android:orientation="vertical" >
+    <include 
+        android:id="@id/common_head_layout"
+        layout="@layout/include_header"/>
+    <TextView 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="主要介绍使用：\n1.嵌入式浏览器的用法\n 2.BaseFragment，BaseFragmentActivity的用法 \n 3.使用FragmentTabAdapter做Fragment的Tab切换的用法"/>
+    <Button 
+        android:id="@+id/tab1_bt1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="嵌入式浏览器"/>
+    <Button 
+        android:id="@+id/tab1_bt4"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="嵌入式浏览器2"/>
+    <Button 
+        android:id="@+id/tab1_bt2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="下拉刷新与加载"/>
+    <Button 
+        android:id="@+id/tab1_bt3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="侧滑栏"/>
+    <Button 
+        android:id="@+id/tab1_bt5"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Tab切换组件"/>
+    <Button 
+        android:id="@+id/tab1_bt6"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="图片列表"/>
+</LinearLayout>

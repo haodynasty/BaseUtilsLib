@@ -1,0 +1,55 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+     <dimen name="drop_down_list_header_padding_top">12dp</dimen>
+    <dimen name="drop_down_list_header_padding_bottom">15dp</dimen>
+    <dimen name="drop_down_list_header_release_min_distance">20dp</dimen>
+    <dimen name="drop_down_list_header_progress_bar_height">36dp</dimen>
+    <dimen name="drop_down_list_footer_progress_bar_height">36dp</dimen>
+    <dimen name="drop_down_list_footer_button_margin_left">8dp</dimen>
+    <dimen name="drop_down_list_footer_button_height">48dp</dimen>
+    
+    <!-- sliding menu(ldrawer) -->
+    <dimen name="ldrawer_drawableSize">50dp</dimen>
+    <dimen name="ldrawer_barSize">18dp</dimen>
+    <dimen name="ldrawer_topBottomBarArrowSize">11dp</dimen>
+    <dimen name="ldrawer_thickness">2dp</dimen>
+    <dimen name="ldrawer_gapBetweenBars">3dp</dimen>
+    <dimen name="ldrawer_middleBarArrowSize">16dp</dimen>
+    
+    <dimen name="pull_to_refresh_footer_height">45dp</dimen>
+    <dimen name="round_filter_radius">7.0px</dimen>
+    <dimen name="text_list_title">16.0sp</dimen>
+    <dimen name="text_list_desc">13.0sp</dimen>
+    <dimen name="text_view_desc">13.0sp</dimen>
+    
+    <!-- commom layout space -->
+    <!-- buttom margin top and bottom -->
+    <dimen name="space_small_buttom_margin_4">4dp</dimen>
+    <!-- icon margin top and bottom，left and right-->
+    <dimen name="space_small_icon_margin_8">8dp</dimen>
+    
+    
+    <!-- commom view height -->
+    <!-- http://www.apkbus.com/design/style/metrics-grids.html -->
+    <!-- base view height , title, list and so on -->
+    <dimen name="view_height_base_48">48dp</dimen>
+    <!-- base icon height -->
+    <dimen name="view_height_icon_32">32dp</dimen>
+    
+
+    <!-- typeface -->
+    <dimen name="typeface_micro_12">12sp</dimen>
+    <dimen name="typeface_small_14">14sp</dimen>
+    <dimen name="typeface_medium_18">18sp</dimen>
+    <dimen name="typeface_large_22">22sp</dimen>
+    <dimen name="typeface_big_25">25sp</dimen>
+    <dimen name="typeface_xbig_40">40sp</dimen>
+    
+    <dimen name="dialog_round_radius">4.0dip</dimen>
+    <dimen name="dialog_padding">15.0dip</dimen>
+    <dimen name="dialog_edittext_height">45.0dip</dimen>
+</resources>

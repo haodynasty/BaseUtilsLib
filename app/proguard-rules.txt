@@ -1,0 +1,197 @@
+# Add project specific ProGuard rules here.
+# By default, the flags in this file are appended to flags specified
+# in C:/android/android-sdk/tools/proguard/proguard-android.txt
+# You can edit the include path and order by changing the ProGuard
+# include property in project.properties.
+#
+# For more details, see
+#   http://developer.android.com/guide/developing/tools/proguard.html
+
+# Add any project specific keep options here:
+
+# If your project uses WebView with JS, uncomment the following
+# and specify the fully qualified class name to the JavaScript interface
+# class:
+#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+#   public *;
+#}
+# 不能混淆的原则，不混淆的需要用-keep指定：
+#（1） 只在 AndroidManifest.xml 引用的类
+#（2） 通过JNI回调方式被调用的函数
+#（3） 运行时动态调用的函数或者成员变量
+#（4） 当然，如果你不确定哪些需要手动配置，可以以默认的配置生成程序，当运行中发现ClassNotFoundException异常时，即可找到哪个类不该被混淆。
+#（5）反射用到的类
+#（6）对于第三方的jar或代码库也最好不要混淆
+
+#注意：请将混淆配置写在指定部分
+
+#####################1.基本混淆配置#####################
+# 指定代码的压缩级别
+-optimizationpasses 5
+# 表明不混合大小写
+-dontusemixedcaseclassnames
+# 不去忽略非公共的库类
+-dontskipnonpubliclibraryclasses
+# 混淆时是否记录日志
+-verbose
+#不优化输入的类文件
+-dontoptimize
+# 混淆时是否做预校验
+-dontpreverify
+# 混淆时所采用的算法
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
+#保护注解
+-keepattributes *Annotation*
+#忽略警告
+-ignorewarning
+#过滤泛型转换（使用到泛型需配置），避免混淆泛型 如果混淆报错建议关掉（去除注释就关掉）
+-keepattributes Signature
+
+-keep public class com.google.vending.licensing.ILicensingService
+-keep public class com.android.vending.licensing.ILicensingService
+# For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
+#保持 native 方法不被混淆
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+
+# We want to keep methods in Activity that could be used in the XML attribute onClick
+-keepclassmembers class * extends android.app.Activity {
+   public void *(android.view.View);
+}
+
+# For enumeration classes, see http://proguard.sourceforge.net/manual/examples.html#enumerations
+#保持枚举不被混淆
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+#保持 Serializable 不被混淆
+-keepnames class * implements java.io.Serializable
+
+# keep setters in Views so that animations can still work.
+# see http://proguard.sourceforge.net/manual/examples.html#beans
+#自定义视图不混淆
+-keepclassmembers public class * extends android.view.View {
+   void set*(***);
+   *** get*();
+}
+
+#保持 Parcelable 不被混淆
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}
+
+#不混淆资源类
+-keepclassmembers class **.R$* {
+    public static <fields>;
+}
+
+# 保持哪些类不被混淆
+-keep public class * extends android.app.Fragment
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.backup.BackupAgentHelper
+-keep public class * extends android.preference.Preference
+#保留所有fields类成员，目的是防止未显式使用的组件，如BindView注解的控件被删除
+-keep public class * extends com.plusub.lib.activity.BaseActivity{
+    <fields>;
+}
+-keep public class * extends com.plusub.lib.activity.BaseFragment{
+     <fields>;
+}
+-keep public class * extends com.plusub.lib.activity.BaseFragmentActivity{
+    <fields>;
+}
+#####################1.基本混淆配置end#####################
+
+
+
+#####################2.保护项目自有代码混淆#####################
+#项目实体类(要修改包名)
+#-keep class com.plusub.lib.example.entity.** { *; }
+
+-keep public class * extends android.view.View {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+    public void set*(...);
+}
+
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context);
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+#EventBus方法不能混淆，否则通过反射找不到该方法
+-keepclassmembers class ** {
+    public void onEvent*(**);
+    void onEvent*(**);
+}
+
+#如果你使用了webview，需配置下面(要修改包名)
+# webview + js
+-keepattributes *JavascriptInterface*
+# keep 使用 webview 的类
+-keep public class * extends com.plusub.lib.activity.SimpleBrowserActivity
+-keepclassmembers class  com.plusub.lib.activity.SimpleWebActivity {
+   public *;
+}
+# keep 使用 webview 的类的所有的内部类
+#-keepclassmembers  class  com.plusub.activity.WebViewActivity$*{
+#    *;
+#}
+#####################2.保护项目自有代码混淆end#####################
+
+
+#####################3.混淆保护第三方lib或jar或代码#####################
+#注意：第三方引用包，Gson,sina,umeng,tencent等，很多都是不能混淆的，否则会出错，故而引用第三方包需要注意
+# The support library contains references to newer platform versions.
+# Don't warn about those in case this app is linking against an older
+# platform version.  We know about them, and they are safe. 
+#dontwarn忽略警告
+-dontwarn android.support.**
+-keep class android.support.** { *; }
+-keep interface android.support.** { *; }
+
+#studio中如果不是在libs中的jar文件就不需要,studio一般采用compile 'com.android.support:support-v4:22.2.0'这种方式引用了
+#-libraryjars   libs/android-support-v4.jar
+
+#如果有引用v4包可以添加下面这行
+-keep public class * extends android.support.v4.app.Fragment
+
+#其他jar包示例，注：都是在libs文件夹下的jar文件
+#注意，新版本现在这些都不需要，会自动加载，否则会报load twice错误
+#-libraryjars libs/alipaysdk.jar
+
+#第三方代码,如果不想混淆 keep 掉
+#-keep class com.nostra13.universalimageloader.** { *; }
+#友盟
+#-keep class com.umeng.**{*;}
+
+#必须keep 高德.jar v2.0.0
+#-keep class com.amap.api.** {*;}
+#-keep class com.autonavi.** {*;}
+#-keep class com.a.a.** {*;}
+
+#alibaba
+-keepattributes Signature
+-keep class sun.misc.Unsafe { *; }
+-keep class com.taobao.** {*;}
+-keep class com.alibaba.** {*;}
+-keep class com.alipay.** {*;}
+-dontwarn com.taobao.**
+-dontwarn com.alibaba.**
+-dontwarn com.alipay.**
+-keep class com.ut.** {*;}
+-dontwarn com.ut.**
+-keep class com.ta.** {*;}
+-dontwarn com.ta.**
+
+#####################3.混淆保护第三方lib或jar end#####################
