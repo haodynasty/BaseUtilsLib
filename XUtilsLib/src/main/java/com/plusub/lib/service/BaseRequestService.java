@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.plusub.lib.BuildConfig;
 import com.plusub.lib.annotate.JsonParserUtils;
 import com.plusub.lib.constant.ErrorCode;
 import com.plusub.lib.net.util.RequestEntity;
@@ -35,7 +36,7 @@ import com.plusub.lib.task.TaskMessage;
 import com.plusub.lib.task.UserTask;
 import com.plusub.lib.util.CommException;
 import com.plusub.lib.util.JSONUtils;
-import com.plusub.lib.util.LogUtils;
+import com.plusub.lib.util.logger.LogLevel;
 import com.plusub.lib.util.logger.Logger;
 
 import org.json.JSONException;
@@ -83,6 +84,12 @@ public abstract class BaseRequestService extends BaseService implements RequestE
 		     new ServiceTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}else{
 		     new ServiceTask().execute();
+		}
+
+		if (BuildConfig.DEBUG) {
+			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
+		} else {
+			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
 		}
 	}
 	
@@ -276,7 +283,7 @@ public abstract class BaseRequestService extends BaseService implements RequestE
 				}else{//post请求
 					result = requestManager.doPost(request.getRequestUrl(), params);
 				}
-				LogUtils.d("Request", "["+request.getRequestUrl()+"]"+ result);
+				Logger.d("Request", "["+request.getRequestUrl()+"]"+ result);
 				
 				JSONObject jo = new JSONObject(result);
 				msg.status = Integer.parseInt(JSONUtils.getString(jo, "status", "0"));

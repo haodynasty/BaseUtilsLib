@@ -1,5 +1,7 @@
 package com.plusub.lib.util;
 
+import com.plusub.lib.util.logger.Logger;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -269,12 +271,12 @@ public class RegexUtils {
 			Matcher matcher3 = pattern3.matcher(str);
 			// 粗略判断
 			if (!matcher.find() && !matcher2.find()) {
-				LogUtils.e("RegexUtils", "身份证号必须为15或18位数字（最后一位可以为x或X）");
+				Logger.e("RegexUtils", "身份证号必须为15或18位数字（最后一位可以为x或X）");
 				flag = false;
 			} else {
 				// 判断出生地
 				if (provinces.indexOf(str.substring(0, 2)) == -1) {
-					LogUtils.e("RegexUtils", "身份证号前两位不正确！");
+					Logger.e("RegexUtils", "身份证号前两位不正确！");
 					flag = false;
 				}
 
@@ -286,15 +288,15 @@ public class RegexUtils {
 					try {
 						Date birthday = sdf.parse(birth);
 						if (!sdf.format(birthday).equals(birth)) {
-							LogUtils.e("RegexUtils", "出生日期非法！");
+							Logger.e("RegexUtils", "出生日期非法！");
 							flag = false;
 						}
 						if (birthday.after(new Date())) {
-							LogUtils.e("RegexUtils", "出生日期不能在今天之后！");
+							Logger.e("RegexUtils", "出生日期不能在今天之后！");
 							flag = false;
 						}
 					} catch (ParseException e) {
-						LogUtils.e("RegexUtils", "出生日期非法！");
+						Logger.e("RegexUtils", "出生日期非法！");
 						flag = false;
 					}
 				} else if (str.length() == 18) {
@@ -304,24 +306,24 @@ public class RegexUtils {
 					try {
 						Date birthday = sdf.parse(birth);
 						if (!sdf.format(birthday).equals(birth)) {
-							LogUtils.e("RegexUtils", "出生日期非法！");
+							Logger.e("RegexUtils", "出生日期非法！");
 							flag = false;
 						}
 						if (birthday.after(new Date())) {
-							LogUtils.e("RegexUtils", "出生日期不能在今天之后！");
+							Logger.e("RegexUtils", "出生日期不能在今天之后！");
 							flag = false;
 						}
 					} catch (ParseException e) {
-						LogUtils.e("RegexUtils", "出生日期非法！");
+						Logger.e("RegexUtils", "出生日期非法！");
 						flag = false;
 					}
 
 					if (!matcher3.find()) {
-						LogUtils.e("RegexUtils", "身份证号最后一位只能为数字或字母x,X！");
+						Logger.e("RegexUtils", "身份证号最后一位只能为数字或字母x,X！");
 						flag = false;
 					}
 				} else {
-					LogUtils.e("RegexUtils", "身份证号位数不正确，请确认！");
+					Logger.e("RegexUtils", "身份证号位数不正确，请确认！");
 					flag = false;
 				}
 			}

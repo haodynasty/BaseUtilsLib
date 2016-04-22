@@ -132,6 +132,8 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 
+    compile 'com.facebook.fresco:fresco:0.9.0+'
+
     //test provided
     //发布到360版本的用Compile在编译和打包都包含fastjson库，非360用provided只是在编译时使用包，不打包
     provided 'com.alibaba:fastjson:1.1.45.android'

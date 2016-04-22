@@ -16,11 +16,6 @@
  */
 package com.plusub.lib.util.bitmap;
 
-import java.io.IOException;
-
-import com.plusub.lib.util.SystemTool;
-
-
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -33,6 +28,10 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.plusub.lib.util.SystemUtils;
+
+import java.io.IOException;
 
 /**
  * 对bitmap特殊处理的工具类<br>
@@ -57,7 +56,7 @@ public class BitmapOperateUtil {
     public static void SetMistyBitmap(View imageview, Bitmap src) {
         if (imageview == null || src == null)
             return;
-        if (SystemTool.getSDKVersion() >= 18) {
+        if (SystemUtils.getSDKVersion() >= 18) {
             src = blur(src, imageview, 12);
         } else {
             if (imageview instanceof ImageView) {

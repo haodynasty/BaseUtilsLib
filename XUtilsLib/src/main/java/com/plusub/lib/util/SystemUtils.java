@@ -14,6 +14,8 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.plusub.lib.util.logger.Logger;
+
 import java.io.File;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -337,7 +339,7 @@ public class SystemUtils {
                     // pkgList 得到该进程下运行的包名
                     String[] pkgList = process.pkgList;
                     for (String pkgName : pkgList) {
-                        LogUtils.d("SystemTool", "======正在杀死包名：" + pkgName);
+                        Logger.d("SystemTool", "正在杀死包名：" + pkgName);
                         try {
                             am.killBackgroundProcesses(pkgName);
                             count++;
@@ -348,7 +350,7 @@ public class SystemUtils {
                     }
                 }
             }
-        LogUtils.d("SystemTool", "清理了" + (getDeviceUsableMemory(cxt) - i)
+        Logger.d("SystemTool", "清理了" + (getDeviceUsableMemory(cxt) - i)
                 + "M内存");
         return count;
     }

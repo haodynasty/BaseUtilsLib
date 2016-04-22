@@ -15,8 +15,8 @@
 
 package com.plusub.lib.other;
 
-import com.plusub.lib.util.LogUtils;
 import com.plusub.lib.util.MD5Encryptor;
+import com.plusub.lib.util.logger.Logger;
 
 import org.apache.http.protocol.HTTP;
 
@@ -235,7 +235,7 @@ public final class LruDiskCache implements Closeable {
                         new OutputStreamWriter(new FileOutputStream(cache.journalFile, true), HTTP.US_ASCII));
                 return cache;
             } catch (Throwable journalIsCorrupt) {
-                LogUtils.e("DiskLruCache "
+                Logger.e("DiskLruCache "
                         + directory
                         + " is corrupt: "
                         + journalIsCorrupt.getMessage()

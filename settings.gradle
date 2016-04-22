@@ -17,6 +17,8 @@ def initGradleEnvironment(){
     //配置bintray.gradle到全局变量
     gradle.ext.bintrayGradle = homeDir + 'bintray.gradle'
     println 'init bintray.gradle path '+gradle.bintrayGradle
+
+    gradle.ext.packageAAR = homeDir + 'package_aar.gradle'
 }
 
 initGradleEnvironment()

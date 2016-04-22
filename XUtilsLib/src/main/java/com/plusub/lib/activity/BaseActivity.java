@@ -21,7 +21,6 @@ import com.plusub.lib.annotate.AnnotateUtil;
 import com.plusub.lib.constant.ErrorCode;
 import com.plusub.lib.task.DataRefreshTask;
 import com.plusub.lib.task.TaskMessage;
-import com.plusub.lib.util.LogUtils;
 import com.plusub.lib.util.logger.LogLevel;
 import com.plusub.lib.util.logger.Logger;
 
@@ -225,25 +224,25 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 			case ErrorCode.DEFAULT_VALUE:
 				break;
 			case ErrorCode.PARA_EXCEPTION:
-				LogUtils.e(this.getClass().getName(), "input params error");
+				Logger.e("input params error");
 				break;
 			case ErrorCode.NET_LINK_EXCEPTION:
-				LogUtils.e(this.getClass().getName(), "net connect error");
+				Logger.e("net connect error");
 				break;
 			case ErrorCode.PARSER_JSON_EXCEPTION:
-				LogUtils.e(this.getClass().getName(), "json parser exception");
+				Logger.e("json parser exception");
 				break;
 			case ErrorCode.PARSER_CLASS_NOT_FOUND:
-				LogUtils.e(this.getClass().getName(), "class parser exception");
+				Logger.e("class parser exception");
 				break;
 			case ErrorCode.OTHER_DEFAULT_EXCEPTION:
-				LogUtils.e(this.getClass().getName(), "other exception");
+				Logger.e("other exception");
 				break;
 			case ErrorCode.OTHER_TASK_NOT_FOUND:
-				LogUtils.e(this.getClass().getName(), "main service task not found exception");
+				Logger.e("main service task not found exception");
 				break;
 			case ErrorCode.SESSION_OUT_OF_TIME:
-				LogUtils.e(this.getClass().getName(), "session out of time");
+				Logger.e("session out of time");
 				break;
 			default:
 				break;

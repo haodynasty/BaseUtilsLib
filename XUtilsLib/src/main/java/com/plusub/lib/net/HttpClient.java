@@ -2,7 +2,7 @@ package com.plusub.lib.net;
 
 import com.plusub.lib.BaseApplication;
 import com.plusub.lib.constant.NetConstant;
-import com.plusub.lib.util.TextUtils;
+import com.plusub.lib.util.StringUtils;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -280,7 +280,7 @@ public class HttpClient{
      */
     public HttpPost createMultiHttpPost(String url,Map<String,File> fileMap, NameValuePair... nameValuePairs) {
         HttpPost httpPost = new HttpPost(url);
-        if (TextUtils.notEmpty(BaseApplication.getInstance().getSessionId())) {
+        if (!StringUtils.isEmpty(BaseApplication.getInstance().getSessionId())) {
             httpPost.setHeader("Cookie", "JSESSIONID="+BaseApplication.getInstance().getSessionId());
 		}
         httpPost.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
@@ -320,7 +320,7 @@ public class HttpClient{
     public HttpGet createHttpGet(String url, NameValuePair... nameValuePairs) {
         String query = URLEncodedUtils.format(createParams(nameValuePairs), HTTP.UTF_8);
         HttpGet httpGet = new HttpGet(url + "?" + query);
-        if (TextUtils.notEmpty(BaseApplication.getInstance().getSessionId())) {
+        if (!StringUtils.isEmpty(BaseApplication.getInstance().getSessionId())) {
 			httpGet.setHeader("Cookie", "JSESSIONID=" +BaseApplication.getInstance().getSessionId());
         }
         httpGet.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
@@ -340,7 +340,7 @@ public class HttpClient{
      */
     public HttpPost createHttpPost(String url, HttpEntity entity, boolean haveFile) {
     	HttpPost httpPost = new HttpPost(url);
-    	if (TextUtils.notEmpty(BaseApplication.getInstance().getSessionId())) {
+    	if (!StringUtils.isEmpty(BaseApplication.getInstance().getSessionId())) {
             httpPost.setHeader("Cookie", "JSESSIONID="+BaseApplication.getInstance().getSessionId());
 		}
         httpPost.addHeader(CLIENT_VERSION_HEADER, mClientVersion);
@@ -360,7 +360,7 @@ public class HttpClient{
      */
     public HttpPost createHttpPost(String url, NameValuePair... nameValuePairs) {
         HttpPost httpPost = new HttpPost(url);
-        if (TextUtils.notEmpty(BaseApplication.getInstance().getSessionId())) {
+        if (!StringUtils.isEmpty(BaseApplication.getInstance().getSessionId())) {
             httpPost.setHeader("Cookie", "JSESSIONID="+BaseApplication.getInstance().getSessionId());
 		}
         httpPost.addHeader(CLIENT_VERSION_HEADER, mClientVersion);

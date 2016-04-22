@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 
 import com.plusub.lib.util.NetStateUtils;
 import com.plusub.lib.util.StringUtils;
-import com.plusub.lib.util.SystemTool;
+import com.plusub.lib.util.SystemUtils;
 
 /**
  * <p>Here is an example of subclassing:</p>
@@ -86,7 +86,7 @@ public class BrowserActivity extends BaseActivity {
     @Override
     @SuppressLint("NewApi")
     public void initView() {
-        if (SystemTool.getSDKVersion() >= 11){
+        if (SystemUtils.getSDKVersion() >= 11){
              ActionBar actionBar = getActionBar();
             if(actionBar != null){
                 actionBar.show();

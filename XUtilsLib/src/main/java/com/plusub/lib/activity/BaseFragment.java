@@ -4,7 +4,6 @@ package com.plusub.lib.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.multidex.instrumentation.BuildConfig;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.plusub.lib.BaseApplication;
+import com.plusub.lib.BuildConfig;
 import com.plusub.lib.annotate.AnnotateUtil;
 import com.plusub.lib.task.DataRefreshTask;
 import com.plusub.lib.util.logger.LogLevel;

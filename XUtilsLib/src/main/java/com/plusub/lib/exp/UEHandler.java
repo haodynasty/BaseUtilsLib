@@ -25,7 +25,7 @@ import android.os.Build;
 import com.plusub.lib.BaseApplication;
 import com.plusub.lib.util.DateUtils;
 import com.plusub.lib.util.FileUtils;
-import com.plusub.lib.util.LogUtils;
+import com.plusub.lib.util.logger.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -89,7 +89,7 @@ public class UEHandler implements Thread.UncaughtExceptionHandler{
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		LogUtils.e("UEHandler", "[UEHandler] Thread Name:"+thread.getName()+" Thread Id:"+threadId+" exception:"+info);
+		Logger.e("UEHandler", "[UEHandler] Thread Name:" + thread.getName() + " Thread Id:" + threadId + " exception:" + info);
 		app.doUncatchException(savePath, threadId, info.toString());
 	}
 	

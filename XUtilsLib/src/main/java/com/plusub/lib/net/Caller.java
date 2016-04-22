@@ -16,14 +16,16 @@
 
 package com.plusub.lib.net;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Map;
+import android.content.Context;
+
+import com.plusub.lib.BaseApplication;
+import com.plusub.lib.constant.ErrorCode;
+import com.plusub.lib.constant.NetConstant;
+import com.plusub.lib.net.util.RequestParams;
+import com.plusub.lib.util.CacheUtils;
+import com.plusub.lib.util.CommException;
+import com.plusub.lib.util.StringUtils;
+import com.plusub.lib.util.logger.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -36,16 +38,14 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import android.content.Context;
-
-import com.plusub.lib.BaseApplication;
-import com.plusub.lib.constant.ErrorCode;
-import com.plusub.lib.constant.NetConstant;
-import com.plusub.lib.net.util.RequestParams;
-import com.plusub.lib.util.CacheUtils;
-import com.plusub.lib.util.CommException;
-import com.plusub.lib.util.LogUtils;
-import com.plusub.lib.util.TextUtils;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Map;
 
 /**
  * 实现网络连接数据请求
@@ -92,7 +92,7 @@ public class Caller {
 		if (params == null) {
 			throw new CommException("do post params is null", ErrorCode.PARA_EXCEPTION);
 		}
-		LogUtils.d(TAG, "Caller.doPost "+url);
+		Logger.d(TAG, "Caller.doPost "+url);
 		
 		String data = "";
 		// initialize HTTP Post request objects
@@ -112,7 +112,7 @@ public class Caller {
 		if (nameValuePairs == null) {
 			throw new CommException("do post params is null", ErrorCode.PARA_EXCEPTION);
 		}
-		LogUtils.d(TAG, "Caller.doPost "+url);
+		Logger.d(TAG, "Caller.doPost "+url);
 		
 		String data = "";
 		// initialize HTTP Post request objects
@@ -134,12 +134,12 @@ public class Caller {
 	 * @param fileMap
 	 * @param nameValuePairs
 	 * @return
-	 * @throws WSError
+	 * @throws CommException
 	 */
 	@Deprecated
 	public static String doMultiPost(String url,Map<String, File> fileMap, NameValuePair... nameValuePairs)
 			throws CommException{
-		LogUtils.d(TAG, "Caller.doMultiPost "+url);
+		Logger.d(TAG, "Caller.doMultiPost "+url);
 		String data = null;
 		// initialize HTTP Post request objects
 		DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
@@ -193,7 +193,7 @@ public class Caller {
 	 * @param isCache 是否缓存
 	 * @param cacheTime 缓存时间，单位秒
 	 * @return
-	 * @throws WSError 
+	 * @throws CommException
 	 */
 	private static String doGet(String url, boolean isCache, int cacheTime) throws CommException{
 		String data = null;
@@ -205,11 +205,11 @@ public class Caller {
 		if(cacheUtils != null && isCache){
 			data = cacheUtils.getAsString(url);
 			if(data != null){
-				LogUtils.d(TAG, "Caller.doGet [cached] "+url);
+				Logger.d(TAG, "Caller.doGet [cached] "+url);
 				return data;
 			}
 		}
-		LogUtils.d(TAG, "Caller.doGet "+url);
+		Logger.d(TAG, "Caller.doGet " + url);
 		
 		// initialize HTTP GET request objects
 		HttpConnectionParams.setConnectionTimeout(httpParameters, NetConstant.TIME_OUT);//设置请求超时10秒  
@@ -219,7 +219,7 @@ public class Caller {
 			// execute request
 			try {
 				httpGet = new HttpGet(url);
-				if (TextUtils.notEmpty(BaseApplication.getInstance().getSessionId())) {
+				if (!StringUtils.isEmpty(BaseApplication.getInstance().getSessionId())) {
 					httpGet.setHeader("Cookie", "JSESSIONID=" +BaseApplication.getInstance().getSessionId());
 				}
 

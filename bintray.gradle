@@ -56,7 +56,7 @@ task sourcesJar(type: Jar) {
 }
 
 //生成html文档javadoc
-task javadoc(type: Javadoc) {
+task javadocs(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     //必须要有这一句，设定编码格式
     options.encoding = "utf-8"
@@ -65,10 +65,10 @@ task javadoc(type: Javadoc) {
 }
 
 //生成文档jar
-task javadocJar(type: Jar, dependsOn: javadoc) {
+task javadocJar(type: Jar, dependsOn: javadocs) {
     classifier = 'javadoc'
     baseName = archiveBaseName
-    from javadoc.destinationDir
+    from javadocs.destinationDir
 }
 
 

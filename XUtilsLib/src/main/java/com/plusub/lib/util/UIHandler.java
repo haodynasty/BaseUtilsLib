@@ -7,6 +7,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Base64;
 
+import com.plusub.lib.util.logger.Logger;
+
 import java.util.Random;
 
 /**
@@ -66,9 +68,8 @@ public class UIHandler {
             Random t = new Random();
             String pray = prays[Math.abs(t.nextInt()) % 3];
             byte[] base64 = Base64.decode(pray, 2);
-//            LogUtils.d("\n" + new String(base64, "utf-8"), new Object[0]);
         } catch (Throwable var3) {
-            LogUtils.w(var3.getMessage());
+            Logger.w("UIHandler", var3.getMessage());
         }
 
     }

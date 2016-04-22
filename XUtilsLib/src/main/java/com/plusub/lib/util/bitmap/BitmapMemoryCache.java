@@ -17,11 +17,11 @@
 package com.plusub.lib.util.bitmap;
 
 
-import com.plusub.lib.other.LruMemoryCache;
-import com.plusub.lib.util.SystemTool;
-
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+
+import com.plusub.lib.other.LruMemoryCache;
+import com.plusub.lib.util.SystemUtils;
 
 /**
  * 使用lru算法的Bitmap内存缓存池<br>
@@ -58,7 +58,7 @@ public final class BitmapMemoryCache {
             @Override
             protected int sizeOf(String key, Bitmap value) {
                 super.sizeOf(key, value);
-                if (SystemTool.getSDKVersion() >= 12) {
+                if (SystemUtils.getSDKVersion() >= 12) {
                     return value.getByteCount() / 1024;
                 } else {
                     return value.getRowBytes() * value.getHeight() / 1024;

@@ -33,7 +33,6 @@ import com.plusub.lib.task.UserTask;
 import com.plusub.lib.util.CacheManager;
 import com.plusub.lib.util.FileUtils;
 import com.plusub.lib.util.JSONUtils;
-import com.plusub.lib.util.LogUtils;
 import com.plusub.lib.util.StrictModeUtil;
 import com.plusub.lib.util.StringUtils;
 import com.plusub.lib.util.logger.LogLevel;
@@ -236,7 +235,7 @@ public abstract class BaseApplication extends Application {
 	 */
 	@SuppressLint("NewApi")
 	public static void exitApp(Context context) {
-		LogUtils.d("BaseApplication exit");
+		Logger.d("BaseApplication exit");
 		
 		stopTask();
 		// 退出所有Activity或Service
