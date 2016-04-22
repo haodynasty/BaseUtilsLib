@@ -2,6 +2,7 @@ package com.plusub.lib.util;
 
 import java.lang.reflect.Method;
 
+import android.annotation.TargetApi;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.database.Cursor;
@@ -95,6 +96,7 @@ public class DownloadManagerPro {
      *         <li>result[2] represents download status, This will initially be 0.</li>
      *         </ul>
      */
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public int[] getBytesAndStatus(long downloadId) {
         int[] bytesAndStatus = new int[] {-1, -1, 0};
         DownloadManager.Query query = new DownloadManager.Query().setFilterById(downloadId);
@@ -264,6 +266,7 @@ public class DownloadManagerPro {
         return getInt(downloadId, DownloadManager.COLUMN_REASON);
     }
 
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public static class RequestPro extends DownloadManager.Request {
 
         public static final String METHOD_NAME_SET_NOTI_CLASS  = "setNotiClass";
@@ -354,6 +357,7 @@ public class DownloadManagerPro {
      * @param columnName
      * @return
      */
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private String getString(long downloadId, String columnName) {
         DownloadManager.Query query = new DownloadManager.Query().setFilterById(downloadId);
         String result = null;
@@ -378,6 +382,7 @@ public class DownloadManagerPro {
      * @param columnName
      * @return
      */
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     private int getInt(long downloadId, String columnName) {
         DownloadManager.Query query = new DownloadManager.Query().setFilterById(downloadId);
         int result = -1;

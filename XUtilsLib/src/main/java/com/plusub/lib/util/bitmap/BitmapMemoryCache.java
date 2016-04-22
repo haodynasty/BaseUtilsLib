@@ -17,7 +17,7 @@
 package com.plusub.lib.util.bitmap;
 
 
-import com.plusub.lib.other.MemoryLruCache;
+import com.plusub.lib.other.LruMemoryCache;
 import com.plusub.lib.util.SystemTool;
 
 import android.annotation.SuppressLint;
@@ -33,7 +33,7 @@ import android.graphics.Bitmap;
  */
 public final class BitmapMemoryCache {
 
-    private MemoryLruCache<String, Bitmap> cache;
+    private LruMemoryCache<String, Bitmap> cache;
 
     public BitmapMemoryCache() {
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
@@ -54,7 +54,7 @@ public final class BitmapMemoryCache {
      */
     @SuppressLint("NewApi")
     private void init(int maxSize) {
-        cache = new MemoryLruCache<String, Bitmap>(maxSize) {
+        cache = new LruMemoryCache<String, Bitmap>(maxSize) {
             @Override
             protected int sizeOf(String key, Bitmap value) {
                 super.sizeOf(key, value);

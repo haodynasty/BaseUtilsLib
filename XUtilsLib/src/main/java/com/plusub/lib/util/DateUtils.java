@@ -5,11 +5,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * TimeUtils
- * 
- * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2013-8-24
+ * DateUtils
+ * 时间格式化处理函数
+ * @author <a href="http://www.blakequ.com" target="_blank">Blakequ</a> 2013-8-24
  */
-public class TimeUtils {
+public class DateUtils {
 
     /**
      * long time to string
@@ -607,26 +607,4 @@ public class TimeUtils {
 		cal.add(Calendar.YEAR, 1);
 		return cal.getTime();
 	}
-
-
-	/**
-	 * 以周为单位获取当前周所属的年（主要解决跨年问题，如2015-12-28是2016年的第一周，
-	 * 此时返回的年就应该是2016而不是2015）
-	 * @param timeMills
-	 * @return 有问题
-	 */
-//	public static int getYearByWeekDate(long timeMills){
-//		Calendar cal = Calendar.getInstance();
-//		cal.setFirstDayOfWeek(Calendar.MONDAY);
-//		cal.setMinimalDaysInFirstWeek(7);
-//		cal.setTimeInMillis(timeMills);
-//		int week = cal.get(Calendar.WEEK_OF_YEAR);
-//		//看是否为跨年
-//		cal.add(Calendar.DAY_OF_MONTH, -7);
-//		int year = cal.get(Calendar.YEAR);
-//		if(week < cal.get(Calendar.WEEK_OF_YEAR)){
-//			year+=1;
-//		}
-//		return year;
-//	}
 }

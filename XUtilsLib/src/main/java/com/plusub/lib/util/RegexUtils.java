@@ -1,5 +1,8 @@
 package com.plusub.lib.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -237,4 +240,92 @@ public class RegexUtils {
 		return m.matches();
 	}
 
+
+	/**
+	 * 不为空时，验证str是否为正确的身份证格式
+	 *
+	 * @param str
+	 * @return
+	 */
+	public static boolean isIdentityCard(String str) {
+		boolean flag = true;
+		if (!StringUtils.isEmpty(str)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			/*
+			 * { 11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",
+			 * 21:"辽宁",22:"吉林",23:"黑龙江",31:"上海",32:"江苏",
+			 * 33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",
+			 * 42:"湖北",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",
+			 * 51:"四川",52:"贵州",53:"云南",54:"西藏",61:"陕西",62:"甘肃",
+			 * 63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外" }
+			 */
+			String provinces = "11,12,13,14,15,21,22,23,31,32,33,34,35,36,37,41,42,43,44,45,46,50,51,52,53,54,61,62,63,64,65,71,81,82,91";
+			//最简单的匹配：^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X|x)$ //分6位+4位年+2位月+2位日+3位数字+最后一位数字或字母x，X
+			Pattern pattern = Pattern.compile("^[1-9]\\d{14}");//第一位为数字1-9，后面14位为数字
+			Matcher matcher = pattern.matcher(str);
+			Pattern pattern2 = Pattern.compile("^[1-9](\\d{16})([0-9]|x|X)$");//第一位为1-9，中间16位为数字，最后一位为数字或x,X
+			Matcher matcher2 = pattern2.matcher(str);
+			Pattern pattern3 = Pattern.compile("[\\d,x,X]$");//最后一位为数字或x,X
+			Matcher matcher3 = pattern3.matcher(str);
+			// 粗略判断
+			if (!matcher.find() && !matcher2.find()) {
+				LogUtils.e("RegexUtils", "身份证号必须为15或18位数字（最后一位可以为x或X）");
+				flag = false;
+			} else {
+				// 判断出生地
+				if (provinces.indexOf(str.substring(0, 2)) == -1) {
+					LogUtils.e("RegexUtils", "身份证号前两位不正确！");
+					flag = false;
+				}
+
+				// 判断出生日期
+				if (str.length() == 15) {
+					String birth = "19" + str.substring(6, 8) + "-"
+							+ str.substring(8, 10) + "-"
+							+ str.substring(10, 12);
+					try {
+						Date birthday = sdf.parse(birth);
+						if (!sdf.format(birthday).equals(birth)) {
+							LogUtils.e("RegexUtils", "出生日期非法！");
+							flag = false;
+						}
+						if (birthday.after(new Date())) {
+							LogUtils.e("RegexUtils", "出生日期不能在今天之后！");
+							flag = false;
+						}
+					} catch (ParseException e) {
+						LogUtils.e("RegexUtils", "出生日期非法！");
+						flag = false;
+					}
+				} else if (str.length() == 18) {
+					String birth = str.substring(6, 10) + "-"
+							+ str.substring(10, 12) + "-"
+							+ str.substring(12, 14);
+					try {
+						Date birthday = sdf.parse(birth);
+						if (!sdf.format(birthday).equals(birth)) {
+							LogUtils.e("RegexUtils", "出生日期非法！");
+							flag = false;
+						}
+						if (birthday.after(new Date())) {
+							LogUtils.e("RegexUtils", "出生日期不能在今天之后！");
+							flag = false;
+						}
+					} catch (ParseException e) {
+						LogUtils.e("RegexUtils", "出生日期非法！");
+						flag = false;
+					}
+
+					if (!matcher3.find()) {
+						LogUtils.e("RegexUtils", "身份证号最后一位只能为数字或字母x,X！");
+						flag = false;
+					}
+				} else {
+					LogUtils.e("RegexUtils", "身份证号位数不正确，请确认！");
+					flag = false;
+				}
+			}
+		}
+		return flag;
+	}
 }

@@ -8,6 +8,86 @@ package com.plusub.lib.util;
 public class ObjectUtils {
 
     /**
+     * 将整型对象转换为boolean
+     * <p>Title: num
+     * <p>Description:
+     * @param o
+     * @return o大于0返回true， 否则返回false
+     */
+    public static boolean objNumberToBoolean(Object o) {
+        int n = 0;
+        try {
+            n = Integer.parseInt(o.toString().trim());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (n > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 将浮点对象转换为boolean
+     * <p>Title: objDecimalToBoolean
+     * <p>Description:
+     * @param o
+     * @return o大于0返回true， 否则返回false
+     */
+    public static boolean objDecimalToBoolean(Object o) {
+        double n = 0;
+        try {
+            n = Double.parseDouble(o.toString().trim());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (n > 0.0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * obj为0（或者""）转换为false, 否则true
+     * <p>Title: stringToBoolean
+     * <p>Description:
+     * @return obj对象为int类型，等于0返回false，否则返回true
+     */
+    public static boolean objToBoolean(Object obj){
+        boolean result = false;
+        if (obj != null) {
+            try{
+                int value = Integer.parseInt(obj.toString().trim());
+                if (value == 0) {
+                    result = false;
+                }else{
+                    result = true;
+                }
+            }catch(NumberFormatException ex){
+                ex.printStackTrace();
+                result = false;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * object is null
+     * <p>Title: empty
+     * <p>Description:
+     * @param o
+     * @return
+     */
+    public static boolean isEmpty(Object o) {
+        return o == null || "".equals(o.toString().trim())
+                || "null".equalsIgnoreCase(o.toString().trim());
+    }
+
+    /**
      * compare two object
      * 
      * @param actual

@@ -1,5 +1,15 @@
 package com.plusub.lib.util;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,16 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
-
 /**
- * 
- * @author qh
+ * 文件工具类
+ * @author blakequ@gmail.com
  *
  */
 public class FileUtils {
@@ -35,14 +38,32 @@ public class FileUtils {
 	/**
 	 * Gets the Android external storage directory
 	 */
-	public static File getSDCardPath(){
-		return Environment.getExternalStorageDirectory();
+	public static String getSDCardPath(){
+		if(isSDCardAvailable()){
+			return Environment.getExternalStorageDirectory().getPath();
+		}
+		return "";
+	}
+
+	/**
+	 * check the sdcard is mounted and available
+	 * @return
+	 */
+	public static boolean isSDCardAvailable(){
+		boolean canRead = Environment.getExternalStorageDirectory().canRead();
+		boolean onlyRead = Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED_READ_ONLY);
+		boolean unMounted = Environment.getExternalStorageState().equals(
+				Environment.MEDIA_UNMOUNTED);
+
+		return !(!canRead || onlyRead || unMounted);
 	}
 	
 	/**
 	 * create public picture file if not exists
 	 * @return if the file exists return true, otherwise, return false and create folder
 	 */
+	@TargetApi(Build.VERSION_CODES.FROYO)
 	public static boolean createExternalStoragePublicPicture(){
 		if (!isSDCardAvailable()) {
 			return false;
@@ -51,6 +72,7 @@ public class FileUtils {
 		return path.mkdirs();
 	}
 	
+	@TargetApi(Build.VERSION_CODES.FROYO)
 	public static String getExternalStoragePublicDownload(){
 		if (!isSDCardAvailable()) {
 			return "";
@@ -129,7 +151,7 @@ public class FileUtils {
 
 	/**
 	 * 向Text文件中写入内容
-	 * @param file
+	 * @param path
 	 * @param content
 	 * @return
 	 */
@@ -137,14 +159,34 @@ public class FileUtils {
 		return write(path, content, false);
 	}
 
+	/**
+	 * 将content写入文件file，append是否已追加方式添加（true：不清空原文件内容）
+	 * @param path
+	 * @param content
+	 * @param append
+	 * @return
+	 */
 	public static boolean write(String path, String content, boolean append) {
 		return write(new File(path), content, append);
 	}
 
+	/**
+	 * 将content写入文件file,默认以覆盖方式写入，如果采用往后添加，则使用{@link #write(File, String, boolean)}
+	 * @param file
+	 * @param content
+	 * @return
+	 */
 	public static boolean write(File file, String content) {
 		return write(file, content, false);
 	}
 
+	/**
+	 * 将content写入文件file，append是否已追加方式添加（true：不清空原文件内容）
+	 * @param file
+	 * @param content
+	 * @param append
+	 * @return
+	 */
 	public static boolean write(File file, String content, boolean append) {
 		if (file == null || TextUtils.isEmpty(content)) {
 			return false;
@@ -338,20 +380,6 @@ public class FileUtils {
 	}
 	
 	/**
-	 * check the state of sdCard
-	 * @return if is available return true
-	 */
-	public static boolean isSDCardAvailable(){
-		boolean canRead = Environment.getExternalStorageDirectory().canRead();
-        boolean onlyRead = Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED_READ_ONLY);
-        boolean unMounted = Environment.getExternalStorageState().equals(
-                Environment.MEDIA_UNMOUNTED);
-
-        return !(!canRead || onlyRead || unMounted);
-	}
-	
-	/**
 	 * check the directory is available , if had existed return true, otherwise created 
 	 * @param path the path of file
 	 * @return
@@ -375,7 +403,7 @@ public class FileUtils {
 	
 	/**
 	 * check the file is exists or not
-	 * @param dirctory the file directory
+	 * @param directory the file directory
 	 * @param fileName the file name
 	 * @return if exists return true
 	 */
@@ -406,7 +434,7 @@ public class FileUtils {
 	/**
 	 * create a folder 
 	 * @param pathName the directory of folder, for example: <p><b>mnt\sdcard\app_name\folder_name</b></p>
-	 *               you should input {@link #createFolder(app_name, folder_name)}, if not exist will create it, 
+	 *               you should input {@link #createFolder(String...)}, if not exist will create it,
 	 *               otherwise return exist path
 	 * @return if success return true
 	 */
@@ -420,7 +448,7 @@ public class FileUtils {
 	
 	/**
 	 * 判断文件的类型
-	 * @param fileName 文件
+	 * @param file 文件
 	 * @param postfixName 文件后缀集合
 	 * @return 如果是postfixName后缀文件，则返回true
 	 */
@@ -522,8 +550,6 @@ public class FileUtils {
      * Normalizes the input string and make sure it is a valid fat32 file name.
      *
      * @param name the name to normalize
-     * @param overheadSize the number of additional characters that will be added
-     *        to the name after sanitization
      * @return the sanitized name
      */
     private static String sanitizeName(String name) {

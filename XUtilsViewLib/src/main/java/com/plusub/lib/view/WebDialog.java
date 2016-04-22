@@ -22,7 +22,6 @@ public class WebDialog extends BaseDialog {
 	private WebView mWebView;
 	private View mLoadingView;
 	private Context mContext;
-	private NetStateUtils mNetWorkUtils;
 	private boolean isCache = false;
 	private OnWebDialogErrorListener mOnWebDialogErrorListener;
 
@@ -91,7 +90,7 @@ public class WebDialog extends BaseDialog {
 			}
 			return;
 		}
-		if (mNetWorkUtils.getNetWorkConnectionType(mContext) == NetStateUtils.NetWorkState.NONE) {
+		if (NetStateUtils.getNetWorkConnectionType(mContext) == NetStateUtils.NetWorkState.NONE) {
 			if (mOnWebDialogErrorListener != null) {
 				mOnWebDialogErrorListener.networkError();
 			}

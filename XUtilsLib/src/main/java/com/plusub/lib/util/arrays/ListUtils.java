@@ -1,4 +1,6 @@
-package com.plusub.lib.util;
+package com.plusub.lib.util.arrays;
+
+import com.plusub.lib.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,8 +106,8 @@ public class ListUtils {
      * @param list
      * @return join list to string, separator is ",". if list is empty, return ""
      */
-    public static String join(List<String> list) {
-        return join(list, DEFAULT_JOIN_SEPARATOR);
+    public static String toStringBySeparator(List<String> list) {
+        return toStringBySeparator(list, DEFAULT_JOIN_SEPARATOR);
     }
 
     /**
@@ -122,8 +124,8 @@ public class ListUtils {
      * @param separator
      * @return join list to string. if list is empty, return ""
      */
-    public static String join(List<String> list, char separator) {
-        return join(list, new String(new char[] {separator}));
+    public static String toStringBySeparator(List<String> list, char separator) {
+        return toStringBySeparator(list, new String(new char[] {separator}));
     }
 
     /**
@@ -142,7 +144,7 @@ public class ListUtils {
      * @param separator
      * @return join list to string with separator. if list is empty, return ""
      */
-    public static String join(List<String> list, String separator) {
+    public static String toStringBySeparator(List<String> list, String separator) {
         if (isEmpty(list)) {
             return "";
         }

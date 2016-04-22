@@ -1,4 +1,4 @@
-package com.plusub.lib.other;
+package com.plusub.lib.util.arrays;
 
 import java.util.ArrayList;
 import java.util.Collection;

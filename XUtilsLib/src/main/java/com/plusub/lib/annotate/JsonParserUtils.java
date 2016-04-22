@@ -20,7 +20,7 @@ import com.plusub.lib.constant.ErrorCode;
 import com.plusub.lib.constant.PlusubConfig;
 import com.plusub.lib.util.CommException;
 import com.plusub.lib.util.JSONUtils;
-import com.plusub.lib.util.LogUtils;
+import com.plusub.lib.util.logger.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +46,8 @@ import java.util.List;
  * @version v1.0
  */
 public class JsonParserUtils {
-	
+
+	private static final String TAG = "JsonParserUtils";
 	private static boolean showLog = PlusubConfig.isPrintJsonErrorSwitch;
 	
 	/**
@@ -55,7 +56,7 @@ public class JsonParserUtils {
 	 * <p>Description: 
 	 * @param isOpen true则打开
 	 */
-	public static void setPrintSwitch(boolean isOpen){
+	public static void setLogSwitch(boolean isOpen){
 		showLog = isOpen;
 	}
 	
@@ -133,7 +134,7 @@ public class JsonParserUtils {
 				} catch (NoSuchFieldException e) {
 					// TODO Auto-generated catch block
 					if (showLog) {
-						LogUtils.e("JsonParserUtils", "没有找到Field："+pageKey);
+						Logger.e("JsonParserUtils", "没有找到Field：" + pageKey);
 						e.printStackTrace();
 					}
 				}
@@ -165,7 +166,7 @@ public class JsonParserUtils {
 				result = Arrays.asList(data);
 			}else{
 				if (showLog) {
-					LogUtils.i("JsonParserUtils", "JSONArray is Empty "+rootKey);
+					Logger.i(TAG, "JSONArray is Empty "+rootKey);
 				}
 			}
 		}
@@ -234,7 +235,7 @@ public class JsonParserUtils {
 								}else{  //域为数组
 									Class listCls = jsonField.classType();
 									if (listCls.equals(Object.class)) {
-										LogUtils.e("JsonParserUtils", "未设置数组属性"+field.getName()+"的classType数组类型，无法解析："+keyName);
+										if (showLog) Logger.e(TAG, "未设置数组属性" + field.getName() + "的classType数组类型，无法解析：" + keyName);
 									}
 									JSONArray ja = null;
 									if (isEmpty(keyName)) {
@@ -362,7 +363,7 @@ public class JsonParserUtils {
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				if (showLog) {
-					LogUtils.e("JsonParserUtils", "set field value fail field:"+field.getName()+" method:"+getSetMethodName(field));
+					Logger.e(TAG, "set field value fail field:"+field.getName()+" method:"+getSetMethodName(field));
 					e1.printStackTrace();
 				}
 			} 
@@ -413,7 +414,7 @@ public class JsonParserUtils {
 	private static Object getType(Field field, Object defaultValue, String fieldName){
 		Object value = defaultValue;
 		if (showLog) {
-			LogUtils.i("JsonParserUtils", "getType:"+field.getName()+" "+field.getType().getName()+" "+" "+defaultValue);
+			Logger.i(TAG, "getType:" + field.getName() + " " + field.getType().getName() + " " + " " + defaultValue);
 		}
 		if (defaultValue == null) {
 			return value;
@@ -451,13 +452,13 @@ public class JsonParserUtils {
 				}
 			}else{ //非基本类型
 				if (showLog) {
-					LogUtils.i("JsonParserUtils", "不是基本类型, 值为："+defaultValue);
+					Logger.i(TAG, "不是基本类型, 值为："+defaultValue);
 				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			if (showLog) {
-				LogUtils.e("JsonParserUtils", "转换域"+fieldName+"错误，从类型String-->"+field.getType().getName()+", 值为"+value);
+				Logger.e(TAG, "转换域"+fieldName+"错误，从类型String-->"+field.getType().getName()+", 值为"+value);
 				e.printStackTrace();
 			}
 			return value;

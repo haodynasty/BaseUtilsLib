@@ -2,11 +2,9 @@ package com.plusub.lib.util;
 
 import java.text.DecimalFormat;
 
-import android.content.Context;
-
 /**
  * SizeUtils
- * 
+ * 字节与MB，KB转换工具
  * <ul>
  * <strong>size transform</strong>
  * <li>{@link SizeUtils#byteToString(long size)}</li>

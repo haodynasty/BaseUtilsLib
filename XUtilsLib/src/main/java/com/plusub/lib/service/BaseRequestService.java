@@ -36,6 +36,7 @@ import com.plusub.lib.task.UserTask;
 import com.plusub.lib.util.CommException;
 import com.plusub.lib.util.JSONUtils;
 import com.plusub.lib.util.LogUtils;
+import com.plusub.lib.util.logger.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -223,7 +224,7 @@ public abstract class BaseRequestService extends BaseService implements RequestE
 			}catch (CommException e) {
 				e.printStackTrace();
 				msg.errorCode = e.getStatusCode();
-				LogUtils.e(TAG, "[MainService] "+msg.errorCode + " CommException[MainService]");
+				Logger.e("[MainService] " + msg.errorCode + " CommException[MainService]");
 				
 				//bug:修复bug，doErrorOprator是在线程中运行，不能更新UI的问题
 				publishProgress(task, e.getStatusCode());
@@ -232,13 +233,13 @@ public abstract class BaseRequestService extends BaseService implements RequestE
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				msg.errorCode = ErrorCode.PARSER_JSON_EXCEPTION;
-				LogUtils.e(TAG, "[MainService] "+msg.errorCode + " JSONException");
+				Logger.e("[MainService] "+msg.errorCode + " JSONException");
 				publishProgress(task, ErrorCode.PARSER_JSON_EXCEPTION);
 //				doErrorOprator(task.getTaskID(), ErrorCode.PARSER_JSON_EXCEPTION, task);
 			}catch(Exception e){
 				e.printStackTrace();
 				msg.errorCode = ErrorCode.OTHER_DEFAULT_EXCEPTION;
-				LogUtils.e(TAG, "[MainService] "+msg.errorCode+" "+e.getCause());
+				Logger.e("[MainService] "+msg.errorCode+" "+e.getCause());
 				publishProgress(task, ErrorCode.OTHER_DEFAULT_EXCEPTION);
 //				doErrorOprator(task.getTaskID(), ErrorCode.OTHER_DEFAULT_EXCEPTION, task);
 			}
@@ -339,7 +340,7 @@ public abstract class BaseRequestService extends BaseService implements RequestE
 					}else if(obj instanceof Float){
 						bd.putFloat(keys, (Float)obj);
 					}else{
-						LogUtils.e(TAG, "[MainService] : unknow map values type ! keys:"+keys);
+						Logger.e("[MainService] : unknow map values type ! keys:"+keys);
 					}
 				}
 			}

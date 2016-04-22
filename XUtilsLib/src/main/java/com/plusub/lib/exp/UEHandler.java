@@ -16,12 +16,6 @@
  */
 package com.plusub.lib.exp;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
 import android.annotation.SuppressLint;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -29,9 +23,12 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 
 import com.plusub.lib.BaseApplication;
+import com.plusub.lib.util.DateUtils;
 import com.plusub.lib.util.FileUtils;
 import com.plusub.lib.util.LogUtils;
-import com.plusub.lib.util.TimeUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 /**
  *  全局异常处理
@@ -60,7 +57,7 @@ public class UEHandler implements Thread.UncaughtExceptionHandler{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		StringBuilder info = new StringBuilder("------------"+TimeUtils.getDateCNNotSecond()+"-------------\n");
+		StringBuilder info = new StringBuilder("------------"+ DateUtils.getDateCNNotSecond()+"-------------\n");
 		info.append(phoneInfo);
 		ByteArrayOutputStream baos = null;
 		PrintStream printStream = null;
@@ -87,7 +84,7 @@ public class UEHandler implements Thread.UncaughtExceptionHandler{
 			}
 		}
 		try {
-			FileUtils.write(savePath, info.toString(), true);
+			FileUtils.write(savePath, info.toString(), false);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -100,7 +97,6 @@ public class UEHandler implements Thread.UncaughtExceptionHandler{
 	 * 保存手机信息
 	 * <p>Title: dumpPhoneInfo
 	 * <p>Description: 
-	 * @param pw
 	 * @throws NameNotFoundException
 	 */
 	@SuppressLint("NewApi")

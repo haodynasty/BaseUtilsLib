@@ -16,17 +16,17 @@
  */
 package com.plusub.lib.util;
 
-import java.io.File;
-
 import android.content.Intent;
 import android.net.Uri;
 
+import java.io.File;
+
 /**
- * 文件打开选择器
- * @author service@plusub.com
+ * Intent打开选择器，包含文件，视频，短信，网页等
+ * @author blakequ@gmail.com
  *
  */
-public class FileIntentUtils {
+public class IntentUtils {
 	
 	/**
 	 * 打开类型文件
@@ -92,7 +92,7 @@ public class FileIntentUtils {
 		Intent intent = new Intent();  
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  
 		intent.setAction(android.content.Intent.ACTION_VIEW);  
-		Uri uri = Uri.fromFile(new File(param ));
+		Uri uri = Uri.fromFile(new File(param));
 		intent.setDataAndType(uri,"application/vnd.android.package-archive"); 
 		return intent;
 	}
@@ -271,5 +271,30 @@ public class FileIntentUtils {
 		Uri uri = Uri.fromFile(new File(param ));   
 		intent.setDataAndType(uri, "application/pdf");   
 		return intent;   
+	}
+
+	/**
+	 * 调用系统发送短信
+	 * @param phone 可为空
+	 * @param content
+	 */
+	public static Intent getSMSIntent(String phone, String content){
+		Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+		sendIntent.putExtra("sms_body", content);
+		if (StringUtils.isEmpty(phone)){
+			sendIntent.putExtra("address", phone);
+		}
+		sendIntent.setType("vnd.android-dir/mms-sms");
+		return sendIntent;
+	}
+
+	/**
+	 * 打开系统浏览器调用网页
+	 * @param url
+	 */
+	public static Intent getSystemBrowerIntent(String url){
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setData(Uri.parse(url));
+		return intent;
 	}
 }

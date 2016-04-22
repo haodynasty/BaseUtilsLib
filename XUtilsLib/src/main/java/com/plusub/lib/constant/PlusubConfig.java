@@ -29,10 +29,6 @@ import com.plusub.lib.util.CacheUtils;
  */
 public class PlusubConfig {
 	
-	/**dubug模式，如果为ture则打印日志*/
-	public static final boolean isDebugSwitch = true;
-	/**是否保存日志到本地*/
-	public static final boolean isLogSaveToFileSwitch = false;
 	/**解析异常打印开关*/
 	public static final boolean isPrintParserErrorSwitch = true;
 	/**Json解析异常打印开关*/

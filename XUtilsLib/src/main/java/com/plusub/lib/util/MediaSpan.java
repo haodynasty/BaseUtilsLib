@@ -1,8 +1,4 @@
 package com.plusub.lib.util;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -12,6 +8,7 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 
 /**
+ * 可点击的媒体链接实现，如播放音频
  * @author blakequ Blakequ@gmail.com
  *
  */
@@ -42,7 +39,7 @@ public class MediaSpan extends ClickableSpan implements ParcelableSpan {
 		dest.writeString(mediaUrl);
 	}
 	
-	public String getCompanyName(){
+	public String getMediaUrl(){
 		return mediaUrl;
 	}
 
@@ -56,7 +53,6 @@ public class MediaSpan extends ClickableSpan implements ParcelableSpan {
 	public void onClick(View widget) {
 		// TODO Auto-generated method stub
 		 Context context = widget.getContext();
-		 System.out.println("mediaUrl:"+mediaUrl);
 		 playMedia();
 	}
 	

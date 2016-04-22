@@ -1,7 +1,6 @@
 package com.plusub.lib.util;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -698,31 +697,5 @@ public class ImageUtils {
             e.printStackTrace();
         }
         return degree;
-    }
-
-    /**
-     * dp转换为像素px
-     * <p>Title: Dp2Px
-     * <p>Description:
-     * @param context
-     * @param dp
-     * @return
-     */
-    public static int Dp2Px(Context context, float dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
-    }
-
-    /**
-     * 像素单位px转换为dp
-     * <p>Title: Px2Dp
-     * <p>Description:
-     * @param context
-     * @param px
-     * @return
-     */
-    public static int Px2Dp(Context context, float px) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (px / scale + 0.5f);
     }
 }

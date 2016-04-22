@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -29,16 +28,16 @@ import com.plusub.lib.annotate.JsonParserUtils;
 import com.plusub.lib.constant.PlusubConfig;
 import com.plusub.lib.exp.UEHandler;
 import com.plusub.lib.service.BaseService;
-import com.plusub.lib.service.NetStateReceiver;
 import com.plusub.lib.task.DataRefreshTask;
 import com.plusub.lib.task.UserTask;
 import com.plusub.lib.util.CacheManager;
-import com.plusub.lib.util.CacheUtils;
 import com.plusub.lib.util.FileUtils;
 import com.plusub.lib.util.JSONUtils;
 import com.plusub.lib.util.LogUtils;
 import com.plusub.lib.util.StrictModeUtil;
 import com.plusub.lib.util.StringUtils;
+import com.plusub.lib.util.logger.LogLevel;
+import com.plusub.lib.util.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -64,8 +63,6 @@ public abstract class BaseApplication extends Application {
     private UEHandler ueHandler;
     /**是否锁定屏幕为竖屏*/
     private boolean isLockScreen = true;
-    /**网络注册监听*/
-    private NetStateReceiver receiver = null;
     /**用户异步任务列表*/
 	public static List<UserTask> taskList = new LinkedList<UserTask>(); 
 	/**网络请求任务列表*/
@@ -83,26 +80,24 @@ public abstract class BaseApplication extends Application {
 		// TODO Auto-generated method stub
 		StrictModeUtil.init();
 		super.onCreate();
+		instance = this;
 		refWatcher = LeakCanary.install(this);
-        initEnv();
-        getHttpCache();
-    	// 启动网络状态监听
-		receiver = new NetStateReceiver();
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-		registerReceiver(receiver, filter);
-		//实例
-        instance = this;
-        ueHandler = new UEHandler(errorLogPath, this);
-        // 设置异常处理实例
-       Thread.setDefaultUncaughtExceptionHandler(ueHandler);
-       //设置Debug模式下打印日志
-       LogUtils.setDebugLog(PlusubConfig.isDebugSwitch);
-       //关闭异常日志输出到本地
-       LogUtils.setSyns(PlusubConfig.isLogSaveToFileSwitch);
-       //打开解析异常打印开关
-       JSONUtils.setPrintSwitch(PlusubConfig.isPrintParserErrorSwitch);
-       JsonParserUtils.setPrintSwitch(PlusubConfig.isPrintJsonErrorSwitch);
+		initEnv();
+
+		// 设置异常处理实例
+		ueHandler = new UEHandler(errorLogPath, this);
+        Thread.setDefaultUncaughtExceptionHandler(ueHandler);
+
+        //打开解析异常打印开关
+        JSONUtils.setPrintSwitch(PlusubConfig.isPrintParserErrorSwitch);
+        JsonParserUtils.setLogSwitch(PlusubConfig.isPrintJsonErrorSwitch);
+
+		//日志开关
+		if (BuildConfig.DEBUG) {
+			Logger.init(getClass().getSimpleName()).hideThreadInfo().setMethodCount(1).setLogLevel(LogLevel.FULL);
+		}else {
+			Logger.init(getClass().getSimpleName()).hideThreadInfo().setMethodCount(1).setLogLevel(LogLevel.NONE);
+		}
 	}
 
 	/**
@@ -157,22 +152,12 @@ public abstract class BaseApplication extends Application {
 		super.onLowMemory();
 	}
 
-	/**
-	 * url请求缓存
-	 * <p>Title: getHttpCache
-	 * <p>Description: 
-	 * @return
-	 */
-	public CacheUtils getHttpCache(){
-		return CacheManager.getHttpCache(getApplicationContext());
-	}
-	
-	public String getSessionId() {
-		return sessionId;
-	}
-	
 	public boolean isLockScreen() {
 		return isLockScreen;
+	}
+
+	public void setIsLockScreen(boolean isLockScreen) {
+		this.isLockScreen = isLockScreen;
 	}
 
 	/**
@@ -194,7 +179,11 @@ public abstract class BaseApplication extends Application {
 	public void setSessionId(String sessionId) {
 		this.sessionId = sessionId;
 	}
-	
+
+	public String getSessionId(){
+		return this.sessionId;
+	}
+
 	/**
 	 * 
 	 * Title: exit
@@ -204,12 +193,6 @@ public abstract class BaseApplication extends Application {
 	private void exit()
 	{
 		CacheManager.getHttpCache(getApplicationContext()).clear();
-		
-		// 关闭广播接口
-		if (receiver != null) {
-			unregisterReceiver(receiver);
-			receiver = null;
-		}
 	}
 	
 	/**
@@ -305,5 +288,26 @@ public abstract class BaseApplication extends Application {
 			}
 		}
 		refreshList.clear();
+	}
+
+	/**
+	 * 当前应用Activity是否存在
+	 * @param context
+	 * @return true表示不存在
+	 */
+	public static boolean isActivityDead(Context context) {
+		int num = 0;
+		if (refreshList != null){
+			for (DataRefreshTask task:refreshList){
+				if (task instanceof Activity){
+					num++;
+				}
+			}
+		}
+
+		if (num == 0){
+			return true;
+		}
+		return false;
 	}
 }

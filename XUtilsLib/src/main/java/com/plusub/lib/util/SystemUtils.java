@@ -1,5 +1,6 @@
 package com.plusub.lib.util;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
@@ -7,12 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.view.inputmethod.InputMethodManager;
 
 import java.io.File;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,49 +47,35 @@ public class SystemUtils {
     }
 
     /**
+     * 手机型号
+     * @return
+     */
+    public static String getPhoneModel(){
+        return Build.MODEL;
+    }
+
+    /**
+     * cpu架构
+     * @return
+     */
+    public static String getCpuABI(){
+        return Build.CPU_ABI;
+    }
+
+    /**
+     * 获取手机品牌
+     * @return
+     */
+    public static String getPhoneBand(){
+        return android.os.Build.BRAND.toLowerCase();
+    }
+
+    /**
      * 获取系统版本
-     *
      * @return 形如2.3.3
      */
     public static String getSystemVersion() {
         return android.os.Build.VERSION.RELEASE;
-    }
-
-    /**
-     * 调用系统发送短信
-     * @param cxt
-     * @param phone 可为空
-     * @param content
-     */
-    public static void sendSMS(Context cxt, String phone, String content){
-        if (cxt == null) return;
-        try{
-            Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-            sendIntent.putExtra("sms_body", content);
-            if (StringUtils.isEmpty(phone)){
-                sendIntent.putExtra("address", phone);
-            }
-            sendIntent.setType("vnd.android-dir/mms-sms");
-            cxt.startActivity(sendIntent);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 打开系统浏览器调用网页
-     * @param cxt
-     * @param url
-     */
-    public static void openSystemBrower(Context cxt, String url){
-        if (cxt == null || StringUtils.isEmpty(url) || !url.startsWith("http")) return;
-        try{
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            cxt.startActivity(intent);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
 
@@ -121,6 +111,27 @@ public class SystemUtils {
                     // 前台运行
                     return false;
                 }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Service is Running in background
+     * <p>Title: isWorked
+     * <p>Description:  服务是否启动
+     * @param context
+     * @param className 要检查的服务名
+     * @return
+     */
+    public static boolean isServiceWorked(Context context, String className) {
+        ActivityManager myManager = (ActivityManager) context.getApplicationContext().getSystemService(
+                Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager.getRunningServices(30);
+        for (int i = 0; i < runningService.size(); i++) {
+            if (runningService.get(i).service.getClassName().toString()
+                    .equals(className)) {
+                return true;
             }
         }
         return false;
@@ -166,7 +177,7 @@ public class SystemUtils {
                 version = pinfo.versionName;
             }
         } catch (PackageManager.NameNotFoundException e) {
-            throw new CommException(SystemTool.class.getName()
+            throw new CommException(SystemUtils.class.getName()
                     + "the application not found");
         }
         return version;
@@ -183,10 +194,36 @@ public class SystemUtils {
                 return pinfo.versionCode;
             }
         } catch (PackageManager.NameNotFoundException e) {
-            throw new CommException(SystemTool.class.getName()
+            throw new CommException(SystemUtils.class.getName()
                     + "the application not found");
         }
         return 0;
+    }
+
+    /**
+     * 判断当前界面是否是桌面
+     */
+    public static boolean isHome(Context context) {
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> rti = mActivityManager.getRunningTasks(1);
+        return getHomes(context).contains(rti.get(0).topActivity.getPackageName());
+    }
+
+    /**
+     * 获得属于桌面的应用的应用包名称
+     * @return 返回包含所有包名的字符串列表
+     */
+    public static List<String> getHomes(Context context) {
+        List<String> names = new ArrayList<String>();
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        List<ResolveInfo> resolveInfo = packageManager.queryIntentActivities(intent,
+                PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo ri : resolveInfo) {
+            names.add(ri.activityInfo.packageName);
+        }
+        return names;
     }
 
     /**
@@ -214,7 +251,7 @@ public class SystemUtils {
                             PackageManager.GET_SIGNATURES);
             return hexdigest(pis.signatures[0].toByteArray());
         } catch (PackageManager.NameNotFoundException e) {
-            throw new CommException(SystemTool.class.getName() + "the "
+            throw new CommException(SystemUtils.class.getName() + "the "
                     + pkgName + "'s application not found");
         }
     }
@@ -267,6 +304,7 @@ public class SystemUtils {
      *            应用上下文对象context
      * @return 被清理的数量
      */
+    @TargetApi(Build.VERSION_CODES.FROYO)
     public static int gc(Context cxt) {
         long i = getDeviceUsableMemory(cxt);
         int count = 0; // 清理掉的进程数

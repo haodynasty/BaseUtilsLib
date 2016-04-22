@@ -1,4 +1,6 @@
-package com.plusub.lib.util;
+package com.plusub.lib.util.arrays;
+
+import com.plusub.lib.util.ObjectUtils;
 
 /**
  * Array Utils

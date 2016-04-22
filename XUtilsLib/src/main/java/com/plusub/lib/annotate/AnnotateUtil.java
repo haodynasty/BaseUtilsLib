@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
  * 
  * @ClassName: AnnotateUtil
  * @Description: TODO 注解工具类
- * @author qh@plusub.com
+ * @author blakequ@gmail.com
  * @date 2014-12-1 下午7:54:47
  * @version v1.0
  */

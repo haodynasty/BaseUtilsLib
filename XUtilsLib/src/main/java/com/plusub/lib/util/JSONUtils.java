@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.plusub.lib.constant.PlusubConfig;
+import com.plusub.lib.util.arrays.MapUtils;
 
 /**
  * Json Utils
@@ -199,7 +200,7 @@ public class JSONUtils {
     }
 
     /**
-     * @param jsonObject
+     * @param jsonData
      * @param key
      * @param defaultValue
      * @return

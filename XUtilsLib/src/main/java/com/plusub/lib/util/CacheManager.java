@@ -12,8 +12,6 @@ import com.plusub.lib.net.Caller;
  */
 public class CacheManager {
 
-    private static CacheUtils httpCache = null;
-
     private CacheManager() {
 
     }

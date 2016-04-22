@@ -1,4 +1,7 @@
-package com.plusub.lib.util;
+package com.plusub.lib.util.arrays;
+
+import com.plusub.lib.util.ObjectUtils;
+import com.plusub.lib.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;

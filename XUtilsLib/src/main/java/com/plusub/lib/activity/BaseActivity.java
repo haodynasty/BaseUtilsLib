@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
@@ -14,11 +16,14 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 
 import com.plusub.lib.BaseApplication;
+import com.plusub.lib.BuildConfig;
 import com.plusub.lib.annotate.AnnotateUtil;
 import com.plusub.lib.constant.ErrorCode;
 import com.plusub.lib.task.DataRefreshTask;
 import com.plusub.lib.task.TaskMessage;
 import com.plusub.lib.util.LogUtils;
+import com.plusub.lib.util.logger.LogLevel;
+import com.plusub.lib.util.logger.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -43,10 +48,6 @@ import java.lang.reflect.Method;
 public abstract class BaseActivity extends AppCompatActivity implements OnClickListener,
 	DataRefreshTask, BaseUITask, IActivity{
 
-	protected BaseApplication mApplication;
-	/**日志打印TAG*/
-	protected String TAG;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -54,10 +55,12 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 		if (BaseApplication.instance.isLockScreen()) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
 		}
-		TAG = getClass().getName();
+		if (BuildConfig.DEBUG) {
+			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
+		} else {
+			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
+		}
 		setOverflowShowingAlways();
-		mApplication = (BaseApplication) getApplication();
-		
 		BaseApplication.refreshList.add(this);
 		setRootView(); // 必须放在annotate之前调用
 		AnnotateUtil.initBindView(this); // 必须放在initialization之前调用
@@ -82,6 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		BaseApplication.refreshList.remove(this);
+		BaseApplication.getRefWatcher(this).watch(this);
 	}
 
 	@Override
@@ -92,6 +96,12 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 	@Override
 	public void onTrimMemory(int level) {
 		super.onTrimMemory(level);
+	}
+
+	public void replaceFragment(int id_content, Fragment fragment) {
+		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		transaction.replace(id_content, fragment);
+		transaction.commit();
 	}
 
 	/**

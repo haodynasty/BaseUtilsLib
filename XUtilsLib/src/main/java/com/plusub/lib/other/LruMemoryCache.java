@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Android Open Source Project
  * @version 1.0
  */
-public class MemoryLruCache<K, V> {
+public class LruMemoryCache<K, V> {
     // LinkedHashMap与 HashMap 的不同之处在于维护着一个运行于所有条目的双向链表。
     // 每次put的value都是放在链表的头部
     private final LinkedHashMap<K, V> map;
@@ -49,7 +49,7 @@ public class MemoryLruCache<K, V> {
      *            this is the maximum sum of the sizes of the entries in this
      *            cache.
      */
-    public MemoryLruCache(int maxSize) {
+    public LruMemoryCache(int maxSize) {
         if (maxSize <= 0) {
             throw new IllegalArgumentException("maxSize <= 0");
         }

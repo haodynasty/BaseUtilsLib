@@ -4,6 +4,7 @@ package com.plusub.lib.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.multidex.instrumentation.BuildConfig;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +14,15 @@ import android.view.ViewGroup;
 import com.plusub.lib.BaseApplication;
 import com.plusub.lib.annotate.AnnotateUtil;
 import com.plusub.lib.task.DataRefreshTask;
+import com.plusub.lib.util.logger.LogLevel;
+import com.plusub.lib.util.logger.Logger;
 
 /**
  * 基本Framgent类
  */
 public abstract class BaseFragment extends Fragment  implements OnClickListener, DataRefreshTask, BaseUITask{
 	protected View mBaseView;
-	/**日志打印TAG*/
-	protected String TAG;
-	
+
 	/**
 	 * 必须实现，需要载入root视图
 	 * <p>Title: inflaterView
@@ -85,7 +86,11 @@ public abstract class BaseFragment extends Fragment  implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		BaseApplication.refreshList.add(this);
-		TAG = getClass().getName();
+		if (BuildConfig.DEBUG) {
+			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
+		} else {
+			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
+		}
 	}
 	
 
@@ -101,6 +106,7 @@ public abstract class BaseFragment extends Fragment  implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		BaseApplication.refreshList.remove(this);
+		BaseApplication.getRefWatcher(getActivity()).watch(this);
 	}
 	
 	
