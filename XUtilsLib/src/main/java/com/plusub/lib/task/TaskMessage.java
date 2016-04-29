@@ -2,7 +2,6 @@ package com.plusub.lib.task;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Messenger;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -43,11 +42,6 @@ public class TaskMessage  implements Parcelable{
     public Bundle data;
     
     /**
-     * task
-     */
-    public DataRefreshTask refreshTask;
-    
-    /**
      * server return status (if status not right, you can get error cause from {@link #message}})
      */
     public int status;
@@ -56,8 +50,30 @@ public class TaskMessage  implements Parcelable{
      * server return message
      */
     public String message;
-	
-	public Bundle getData() {
+
+    protected TaskMessage(Parcel in) {
+        what = in.readInt();
+        errorCode = in.readInt();
+        arg1 = in.readInt();
+        arg2 = in.readInt();
+        data = in.readBundle();
+        status = in.readInt();
+        message = in.readString();
+    }
+
+    public static final Creator<TaskMessage> CREATOR = new Creator<TaskMessage>() {
+        @Override
+        public TaskMessage createFromParcel(Parcel in) {
+            return new TaskMessage(in);
+        }
+
+        @Override
+        public TaskMessage[] newArray(int size) {
+            return new TaskMessage[size];
+        }
+    };
+
+    public Bundle getData() {
 		return data;
 	}
 

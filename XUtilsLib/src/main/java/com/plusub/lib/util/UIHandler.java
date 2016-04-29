@@ -13,20 +13,20 @@ import java.util.Random;
 
 /**
  * Copyright (C) quhao All Rights Reserved <blakequ@gmail.com>
- * <p/>
+ * <br>
  * Licensed under the Plusub License, Version 1.0 (the "License");
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * <p/>
- * author  : quhao <blakequ@gmail.com>
- * date     : 2016/2/23 10:51
- * last modify author :
- * version : 1.0
- * description:内部封装的Handler处理类
- * <p>用法如下：</><br/>
+ * <br>
+ * author  : quhao <blakequ@gmail.com><br>
+ * date     : 2016/2/23 10:51<br>
+ * last modify author :<br>
+ * version : 1.0<br>
+ * description:内部封装的Handler处理类<br>
+ * 用法如下：<br>
  * <pre>
  *     UIHandler.sendEmptyMessageDelayed(0, 1000, new Handler.Callback() {
             @Override

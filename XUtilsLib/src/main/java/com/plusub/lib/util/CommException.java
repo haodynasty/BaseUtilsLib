@@ -7,6 +7,7 @@ package com.plusub.lib.util;
 public class CommException  extends Exception {
 	private int statusCode = -1;
 	private static final long serialVersionUID = 1L;
+    public static final int PARSER_JSON_EXCEPTION = 1;
 	
 	public CommException(String msg) {
         super(msg);

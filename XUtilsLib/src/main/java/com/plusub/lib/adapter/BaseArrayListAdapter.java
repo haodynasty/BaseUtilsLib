@@ -16,17 +16,16 @@
  */
 package com.plusub.lib.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 数组适配器，只需要实现 {@link #getView(int, View, ViewGroup)}

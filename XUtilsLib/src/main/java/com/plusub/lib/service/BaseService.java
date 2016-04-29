@@ -4,7 +4,7 @@ import android.app.Service;
 
 import com.plusub.lib.BaseApplication;
 import com.plusub.lib.BuildConfig;
-import com.plusub.lib.task.DataRefreshTask;
+import com.plusub.lib.activity.BaseTask;
 import com.plusub.lib.util.logger.LogLevel;
 import com.plusub.lib.util.logger.Logger;
 
@@ -15,7 +15,7 @@ import com.plusub.lib.util.logger.Logger;
  * @author blakequ Blakequ@gmail.com
  * 
  */
-public abstract class BaseService extends Service implements DataRefreshTask{
+public abstract class BaseService extends Service implements BaseTask{
 
 	@Override
 	public void onCreate() {
@@ -26,14 +26,14 @@ public abstract class BaseService extends Service implements DataRefreshTask{
 		} else {
 			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
 		}
-		BaseApplication.refreshList.add(this);
+		BaseApplication.totalList.add(this);
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		BaseApplication.refreshList.remove(this);
+		BaseApplication.totalList.remove(this);
 	}
 	
 	/**

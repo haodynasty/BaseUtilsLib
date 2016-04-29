@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply from:gradle.utilsGradle
-//apply from:gradle.packageAAR
 
 initProperty()
 
@@ -10,7 +9,6 @@ version = PROJ_BASE_VERSION
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-    resourcePrefix "plusub_base_"
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 22
@@ -32,12 +30,24 @@ android {
 
 }
 
+tasks.withType(Javadoc){
+    println '========javadoc===='
+    failOnError = false
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
+    //eventbus
     compile 'org.greenrobot:eventbus:3.0.0'
-    //    compile 'org.apache.httpcomponents:httpmime:4.5.2'
+    //http request lib
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    //image lib
+    compile 'com.facebook.fresco:fresco:0.10.0'
+    //rxandroid:https://github.com/ReactiveX/RxAndroid
+    //ormlite
+
     //LeakCanary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

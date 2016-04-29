@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +50,12 @@ public class BrowserActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initView();
+        initEvent();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -77,13 +84,7 @@ public class BrowserActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public void initData() {
-        // TODO Auto-generated method stub
-    }
 
-
-    @Override
     @SuppressLint("NewApi")
     public void initView() {
         if (SystemUtils.getSDKVersion() >= 11){
@@ -103,7 +104,6 @@ public class BrowserActivity extends BaseActivity {
         }
     }
 
-    @Override
     public void initEvent() {
         // TODO Auto-generated method stub
         //设置WebView离线缓存，若不缓存注释即可
@@ -166,7 +166,17 @@ public class BrowserActivity extends BaseActivity {
     }
 
     @Override
-    public void setRootView() {
+    public void onTrimMemory() {
+
+    }
+
+    @Override
+    public int provideContentViewId() {
+        return 0;
+    }
+
+    @Override
+    public View provideContentViewLayout() {
         // TODO Auto-generated method stub
         RelativeLayout rl = new RelativeLayout(this);
         rl.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -183,7 +193,7 @@ public class BrowserActivity extends BaseActivity {
 
         rl.addView(mWebView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         rl.addView(mLoadingView, rlParams);
-        setContentView(rl);
+        return rl;
     }
 
 }

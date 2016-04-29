@@ -16,8 +16,6 @@
  */
 package com.plusub.lib.annotate;
 
-import com.plusub.lib.constant.ErrorCode;
-import com.plusub.lib.constant.PlusubConfig;
 import com.plusub.lib.util.CommException;
 import com.plusub.lib.util.JSONUtils;
 import com.plusub.lib.util.logger.Logger;
@@ -48,7 +46,7 @@ import java.util.List;
 public class JsonParserUtils {
 
 	private static final String TAG = "JsonParserUtils";
-	private static boolean showLog = PlusubConfig.isPrintJsonErrorSwitch;
+	private static boolean showLog = false;
 	
 	/**
 	 * 解析日志打印开关
@@ -267,7 +265,7 @@ public class JsonParserUtils {
 								setFieldValue(obj, field, defaultValue);
 							}
 	                    } catch (Exception e) {
-	                    	throw new CommException("parser "+obj.getClass().getName()+" error! \n"+e.getMessage(), ErrorCode.PARSER_JSON_EXCEPTION);
+	                    	throw new CommException("parser "+obj.getClass().getName()+" error! \n"+e.getMessage(), CommException.PARSER_JSON_EXCEPTION);
 	                    }
 	                }else{ //没有设置JsonParserField的字段，全部采用默认
 	                	setSingleValue(obj, field, jsonObj, field.getName());
@@ -316,7 +314,7 @@ public class JsonParserUtils {
 			obj = Class.forName(className).newInstance();
 		} catch (Exception e) {
 			// TODO: handle exception
-			throw new CommException("getInstance init class "+className+" error! \n"+e.getMessage(), ErrorCode.PARSER_JSON_EXCEPTION);
+			throw new CommException("getInstance init class "+className+" error! \n"+e.getMessage(), CommException.PARSER_JSON_EXCEPTION);
 		}
 		return obj;
 	}

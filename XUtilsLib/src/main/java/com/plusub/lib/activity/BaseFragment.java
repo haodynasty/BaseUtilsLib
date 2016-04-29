@@ -11,16 +11,15 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.plusub.lib.BaseApplication;
-import com.plusub.lib.BuildConfig;
 import com.plusub.lib.annotate.AnnotateUtil;
-import com.plusub.lib.task.DataRefreshTask;
+import com.plusub.lib.util.GarbageUtils;
 import com.plusub.lib.util.logger.LogLevel;
 import com.plusub.lib.util.logger.Logger;
 
 /**
  * 基本Framgent类
  */
-public abstract class BaseFragment extends Fragment  implements OnClickListener, DataRefreshTask, BaseUITask{
+public abstract class BaseFragment extends Fragment  implements OnClickListener, BaseTask {
 	protected View mBaseView;
 
 	/**
@@ -49,16 +48,11 @@ public abstract class BaseFragment extends Fragment  implements OnClickListener,
 		View view = inflaterView(inflater, container, savedInstanceState);
 		this.mBaseView = view;
         AnnotateUtil.initBindView(this, view);
-        initView();
         initView(view);
-        initData();
-        initEvent();
         return view;
 	}
 	
-	@Override
-	public void initView(){};
-	
+
 	/**
 	 * Look for a child view with the given id. If this view has the given id, return this view.
 	 * <p>Title: findViewById
@@ -85,8 +79,8 @@ public abstract class BaseFragment extends Fragment  implements OnClickListener,
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		BaseApplication.refreshList.add(this);
-		if (BuildConfig.DEBUG) {
+		BaseApplication.totalList.add(this);
+		if (BaseApplication.DEBUG_MODE) {
 			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
 		} else {
 			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
@@ -105,10 +99,13 @@ public abstract class BaseFragment extends Fragment  implements OnClickListener,
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		BaseApplication.refreshList.remove(this);
+		if (mBaseView != null){
+			GarbageUtils.unBindDrawables(mBaseView);
+			GarbageUtils.unBindListener(mBaseView);
+		}
+		BaseApplication.totalList.remove(this);
 		BaseApplication.getRefWatcher(getActivity()).watch(this);
 	}
-	
 	
 	/** 通过Class跳转界面 **/
 	protected void startActivity(Class<?> cls) {

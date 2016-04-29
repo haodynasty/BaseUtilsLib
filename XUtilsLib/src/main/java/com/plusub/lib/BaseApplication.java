@@ -24,13 +24,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 
+import com.plusub.lib.activity.BaseTask;
 import com.plusub.lib.annotate.JsonParserUtils;
-import com.plusub.lib.constant.PlusubConfig;
 import com.plusub.lib.exp.UEHandler;
 import com.plusub.lib.service.BaseService;
-import com.plusub.lib.task.DataRefreshTask;
 import com.plusub.lib.task.UserTask;
-import com.plusub.lib.util.CacheManager;
 import com.plusub.lib.util.FileUtils;
 import com.plusub.lib.util.JSONUtils;
 import com.plusub.lib.util.StrictModeUtil;
@@ -53,6 +51,7 @@ import java.util.List;
 public abstract class BaseApplication extends Application {
 
 	private String sessionId;
+	public static boolean DEBUG_MODE = true;
 	public static BaseApplication instance;
     /**缓存路径*/
     public static String mCachePath;
@@ -64,8 +63,8 @@ public abstract class BaseApplication extends Application {
     private boolean isLockScreen = true;
     /**用户异步任务列表*/
 	public static List<UserTask> taskList = new LinkedList<UserTask>(); 
-	/**网络请求任务列表*/
-	public static List<DataRefreshTask> refreshList = new LinkedList<DataRefreshTask>();
+	/**基本任务列表*/
+	public static List<BaseTask> totalList = new LinkedList<BaseTask>();
 
     public static BaseApplication getInstance(){
     	return instance;
@@ -77,6 +76,7 @@ public abstract class BaseApplication extends Application {
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
+		DEBUG_MODE = isDebug();
 		StrictModeUtil.init();
 		super.onCreate();
 		instance = this;
@@ -88,11 +88,11 @@ public abstract class BaseApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(ueHandler);
 
         //打开解析异常打印开关
-        JSONUtils.setPrintSwitch(PlusubConfig.isPrintParserErrorSwitch);
-        JsonParserUtils.setLogSwitch(PlusubConfig.isPrintJsonErrorSwitch);
+        JSONUtils.setPrintSwitch(BaseApplication.DEBUG_MODE);
+        JsonParserUtils.setLogSwitch(BaseApplication.DEBUG_MODE);
 
 		//日志开关
-		if (BuildConfig.DEBUG) {
+		if (BaseApplication.DEBUG_MODE) {
 			Logger.init(getClass().getSimpleName()).hideThreadInfo().setMethodCount(1).setLogLevel(LogLevel.FULL);
 		}else {
 			Logger.init(getClass().getSimpleName()).hideThreadInfo().setMethodCount(1).setLogLevel(LogLevel.NONE);
@@ -149,14 +149,22 @@ public abstract class BaseApplication extends Application {
 	public void onLowMemory() {
 		// TODO Auto-generated method stub
 		super.onLowMemory();
+		clearService();
+	}
+
+	@Override
+	public void onTrimMemory(int level) {
+		super.onTrimMemory(level);
+		switch (level) {
+			case TRIM_MEMORY_UI_HIDDEN:
+				// 进行资源释放操作
+				clearService();
+				break;
+		}
 	}
 
 	public boolean isLockScreen() {
 		return isLockScreen;
-	}
-
-	public void setIsLockScreen(boolean isLockScreen) {
-		this.isLockScreen = isLockScreen;
 	}
 
 	/**
@@ -191,7 +199,7 @@ public abstract class BaseApplication extends Application {
 	 */
 	private void exit()
 	{
-		CacheManager.getHttpCache(getApplicationContext()).clear();
+
 	}
 	
 	/**
@@ -201,6 +209,12 @@ public abstract class BaseApplication extends Application {
 	 * <p>Description:
 	 */
 	public abstract void clearApp();
+
+	/**
+	 * 获取当前debug模式
+	 * @return 应该返回BuildConfig.DEBUG即可
+	 */
+	public abstract boolean isDebug();
 	
 
 	/**
@@ -213,13 +227,14 @@ public abstract class BaseApplication extends Application {
         if (StringUtils.isEmpty(mAppId)) {
 			mAppId = "log";
 		}
-        String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mCachePath = sdcard+"/"+mAppId+"/cache/image";
-        errorLogPath = sdcard+"/"+mAppId+"/log/error.log";
-        FileUtils.createExternalStoragePublicPicture();
-		if(FileUtils.isSDCardAvailable()){
-			FileUtils.createDir(new File(mCachePath));
+		if (FileUtils.isSDCardAvailable()){
+			String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath();
+			errorLogPath = sdcard+"/"+mAppId+"/log/error.log";
+			mCachePath = FileUtils.getOutCacheDir(this).getAbsolutePath();
 			FileUtils.createNewFile(new File(errorLogPath));
+		}else {
+			errorLogPath = FileUtils.getInnerFileDir(this).getAbsolutePath();
+			mCachePath = FileUtils.getInnerCacheDir(this).getAbsolutePath();
 		}
     }
     
@@ -275,18 +290,38 @@ public abstract class BaseApplication extends Application {
 	 * <p>Description:
 	 */
 	public static void clearContextStack(){
-		for (int i = 0; i < refreshList.size(); i++) {
-			if (refreshList.get(i) instanceof Activity) {
-				((Activity) refreshList.get(i)).finish();
-			}else if(refreshList.get(i) instanceof BaseService){
-				BaseService service = ((BaseService)refreshList.get(i));
+		for (int i = 0; i < totalList.size(); i++) {
+			if (totalList.get(i) instanceof Activity) {
+				((Activity) totalList.get(i)).finish();
+			}else if(totalList.get(i) instanceof BaseService){
+				BaseService service = ((BaseService) totalList.get(i));
 				service.exitApp();
 				if (service.isAutoFinish()) {
 					service.stopSelf();
 				}
 			}
 		}
-		refreshList.clear();
+		totalList.clear();
+	}
+
+	/**
+	 * 清除service
+	 * <p>Title: clearActivityStack
+	 * <p>Description:
+	 */
+	public static void clearService(){
+		for (int i = 0; i < totalList.size(); i++) {
+			if (totalList.get(i) instanceof BaseTask) {
+				((BaseTask) totalList.get(i)).onTrimMemory();
+			}else if(totalList.get(i) instanceof BaseService){
+				BaseService service = ((BaseService) totalList.get(i));
+				if (service.isAutoFinish()) {
+					service.exitApp();
+					service.stopSelf();
+				}
+				totalList.remove(i);
+			}
+		}
 	}
 
 	/**
@@ -296,8 +331,8 @@ public abstract class BaseApplication extends Application {
 	 */
 	public static boolean isActivityDead(Context context) {
 		int num = 0;
-		if (refreshList != null){
-			for (DataRefreshTask task:refreshList){
+		if (totalList != null){
+			for (BaseTask task: totalList){
 				if (task instanceof Activity){
 					num++;
 				}

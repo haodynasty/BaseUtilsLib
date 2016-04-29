@@ -16,19 +16,25 @@
  */
 package com.plusub.lib.activity;
 
+import android.view.View;
+
 /**
  * @ClassName: IActivity
  * @Description: TODO
- * @author qh@plusub.com
+ * @author blakequ@gmail.com
  * @date： 
  *     <b>文件创建时间：</b>2014-12-1 上午11:16:49<br>
  *     <b>最后修改时间：</b>2014-12-1 上午11:16:49
  * @version v1.0
  */
 public interface IActivity {
-	 /** 初始化方法 */
-    void initialize();
 
-    /** 设置root界面, 必须在这里面调用setContentView设置界面 */
-    void setRootView();
+    /** 必须在这里面返回主界面布局id */
+    int provideContentViewId();
+
+    /**
+     * 可以返回主界面布局视图
+     * @return
+     */
+    View provideContentViewLayout();
 }

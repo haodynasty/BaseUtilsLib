@@ -3,7 +3,7 @@ package com.plusub.lib.util;
 import android.os.Build;
 import android.os.StrictMode;
 
-import com.plusub.lib.BuildConfig;
+import com.plusub.lib.BaseApplication;
 
 /**
  * Copyright (C) quhao All Rights Reserved <blakequ@gmail.com>
@@ -29,13 +29,13 @@ public class StrictModeUtil {
      * 开启内存和VM严格模式
      */
     public static void init() {
-        if (isShow && BuildConfig.DEBUG && Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+        if (isShow && BaseApplication.DEBUG_MODE && Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
             try{
-                //线程监控，会弹框
+                //线程监控，弹框penaltyDialog
                 StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                         .detectAll()
                         .penaltyLog()
-                        .penaltyDialog()
+//                        .penaltyDialog()
                         .build());
 
                 //VM监控
@@ -53,7 +53,7 @@ public class StrictModeUtil {
      * 关闭内存严格模式
      */
     public static void permitStrict(){
-        if (isShow && BuildConfig.DEBUG && Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+        if (isShow && BaseApplication.DEBUG_MODE && Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
             try{
                 //线程监控，会弹框
                 StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()

@@ -1,15 +1,14 @@
 package com.plusub.lib.util;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import com.plusub.lib.util.arrays.MapUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.plusub.lib.constant.PlusubConfig;
-import com.plusub.lib.util.arrays.MapUtils;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Json Utils
@@ -18,7 +17,7 @@ import com.plusub.lib.util.arrays.MapUtils;
  */
 public class JSONUtils {
 
-    public static boolean isPrintException = PlusubConfig.isPrintParserErrorSwitch;
+    public static boolean isPrintException = true;
 
     /**
      * open or close json exception switch
@@ -91,7 +90,6 @@ public class JSONUtils {
      * @return <ul>
      *         <li>if jsonObject is null, return defaultValue</li>
      *         <li>if jsonData {@link JSONObject#JSONObject(String)} exception, return defaultValue</li>
-     *         <li>return {@link JSONUtils#getLong(JSONObject, String, JSONObject)}</li>
      *         </ul>
      */
     public static Long getLong(String jsonData, String key, Long defaultValue) {
@@ -169,7 +167,6 @@ public class JSONUtils {
      * @return <ul>
      *         <li>if jsonObject is null, return defaultValue</li>
      *         <li>if jsonData {@link JSONObject#JSONObject(String)} exception, return defaultValue</li>
-     *         <li>return {@link JSONUtils#getInt(JSONObject, String, JSONObject)}</li>
      *         </ul>
      */
     public static Integer getInt(String jsonData, String key, Integer defaultValue) {
@@ -247,7 +244,6 @@ public class JSONUtils {
      * @return <ul>
      *         <li>if jsonObject is null, return defaultValue</li>
      *         <li>if jsonData {@link JSONObject#JSONObject(String)} exception, return defaultValue</li>
-     *         <li>return {@link JSONUtils#getDouble(JSONObject, String, JSONObject)}</li>
      *         </ul>
      */
     public static Double getDouble(String jsonData, String key, Double defaultValue) {
@@ -278,7 +274,7 @@ public class JSONUtils {
     }
 
     /**
-     * @param jsonObject
+     * @param jsonData
      * @param key
      * @param defaultValue
      * @return
@@ -325,7 +321,6 @@ public class JSONUtils {
      * @return <ul>
      *         <li>if jsonObject is null, return defaultValue</li>
      *         <li>if jsonData {@link JSONObject#JSONObject(String)} exception, return defaultValue</li>
-     *         <li>return {@link JSONUtils#getString(JSONObject, String, JSONObject)}</li>
      *         </ul>
      */
     public static String getString(String jsonData, String key, String defaultValue) {
@@ -390,7 +385,6 @@ public class JSONUtils {
      * @return <ul>
      *         <li>if jsonObject is null, return defaultValue</li>
      *         <li>if jsonData {@link JSONObject#JSONObject(String)} exception, return defaultValue</li>
-     *         <li>return {@link JSONUtils#getStringArray(JSONObject, String, JSONObject)}</li>
      *         </ul>
      */
     public static String[] getStringArray(String jsonData, String key, String[] defaultValue) {
@@ -502,7 +496,6 @@ public class JSONUtils {
      * @return <ul>
      *         <li>if jsonObject is null, return defaultValue</li>
      *         <li>if jsonData {@link JSONObject#JSONObject(String)} exception, return defaultValue</li>
-     *         <li>return {@link JSONUtils#getJSONArray(JSONObject, String, JSONObject)}</li>
      *         </ul>
      */
     public static JSONArray getJSONArray(String jsonData, String key, JSONArray defaultValue) {

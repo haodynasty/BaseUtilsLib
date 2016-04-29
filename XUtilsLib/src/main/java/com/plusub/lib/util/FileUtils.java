@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
+import com.plusub.lib.util.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,6 +43,54 @@ public class FileUtils {
 			return Environment.getExternalStorageDirectory().getPath();
 		}
 		return "";
+	}
+
+	/**
+	 * get the inner file dir, the path is:/data/data/package_name/files
+	 * @param context
+	 * @return
+	 */
+	public static File getInnerFileDir(Context context){
+		return context.getFilesDir();
+	}
+
+	/**
+	 * get the inner cache dir, the path is:/data/data/package_name/cache
+	 * <br>notice:the cache will be delete if internal storage space is not enough,
+	 * 不要把重要的文件放在cache文件里面，
+	 * 可以放置在files里面，因为这个文件只有在APP被卸载的时候才会被删除。还有要注意的一点是，如果应用程序是更新操作，内部存储不会被删除，区别于被用户手动卸载
+	 * @param context
+	 * @return
+	 */
+	public static File getInnerCacheDir(Context context){
+		return context.getCacheDir();
+	}
+
+	/**
+	 * 获取外部sdcard上私有存储缓存位置(Android文件夹是隐藏文件夹，用户无法操作)，path:/sdcard/Android/date/package_name/cache
+	 * <br>notice:如果我们想缓存图片等比较耗空间的文件，推荐放在getExternalCacheDir()所在的文件下面，这个文件和getCacheDir()很像，
+	 * 都可以放缓存文件，在APP被卸载的时候，都会被系统删除，而且缓存的内容对其他APP是相对私有的,**应用卸载的时候会被删除**
+	 * @param context
+	 * @return if sdcard is not available, will return null
+	 */
+	public static File getOutCacheDir(Context context){
+		if(isSDCardAvailable()){
+			return context.getExternalCacheDir();
+		}
+		return null;
+	}
+
+	/**
+	 * 获取外部sdcard上私有存储图片路径(Android文件夹是隐藏文件夹，用户无法操作)，path:/sdcard/Android/date/package_name/files/Pictures
+	 * **应用卸载的时候会被删除**
+	 * @param context
+	 * @return if sdcard is not available, will return null
+	 */
+	public static File getOutFilePicDir(Context context){
+		if(isSDCardAvailable()){
+			return context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		}
+		return null;
 	}
 
 	/**
@@ -105,7 +153,7 @@ public class FileUtils {
 				file.createNewFile();
 			}
 		} catch (IOException e) {
-			Log.e(TAG, "", e);
+			Logger.e(TAG, "", e);
 			return null;
 		}
 		return file;
@@ -198,14 +246,14 @@ public class FileUtils {
 		try {
 			ops = new FileOutputStream(file, append);
 			ops.write(content.getBytes());
+			ops.flush();
 		} catch (Exception e) {
-			Log.e(TAG, "", e);
-			return false;
+			Logger.e(TAG, "", e);
 		} finally {
 			try {
-				ops.close();
+				if (ops != null) ops.close();
 			} catch (IOException e) {
-				Log.e(TAG, "", e);
+				Logger.e(TAG, "", e);
 			}
 			ops = null;
 		}
@@ -235,7 +283,7 @@ public class FileUtils {
 	 * @param file
 	 * @param startLine
 	 * @param lineCount
-	 * @return 读到文字的list,如果list.size<lineCount则说明读到文件末尾了
+	 * @return 读到文字的list,如果list.size小于lineCount则说明读到文件末尾了
 	 */
 	public static List<String> readFile(File file, int startLine, int lineCount) {
 		if (file == null || startLine < 1 || lineCount < 1) {
@@ -268,7 +316,7 @@ public class FileUtils {
 				}
 			}
 		} catch (Exception e) {
-			Log.e(TAG, "read log error!", e);
+			Logger.e(TAG, "read log error!", e);
 		} finally {
 			if (fileReader != null) {
 				try {
@@ -293,7 +341,7 @@ public class FileUtils {
 			}
 			return true;
 		} catch (Exception e) {
-			Log.e(TAG, "create dir error", e);
+			Logger.e(TAG, "create dir error", e);
 			return false;
 		}
 	}
@@ -504,13 +552,13 @@ public class FileUtils {
 				try {
 					from.close();
 				} catch (IOException e) {
-					Log.e(TAG, "", e);
+					Logger.e(TAG, "", e);
 				}
 			if (to != null)
 				try {
 					to.close();
 				} catch (IOException e) {
-					Log.e(TAG, "", e);
+					Logger.e(TAG, "", e);
 				}
 		}
 	}

@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
@@ -16,11 +14,8 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 
 import com.plusub.lib.BaseApplication;
-import com.plusub.lib.BuildConfig;
 import com.plusub.lib.annotate.AnnotateUtil;
-import com.plusub.lib.constant.ErrorCode;
-import com.plusub.lib.task.DataRefreshTask;
-import com.plusub.lib.task.TaskMessage;
+import com.plusub.lib.util.GarbageUtils;
 import com.plusub.lib.util.logger.LogLevel;
 import com.plusub.lib.util.logger.Logger;
 
@@ -31,21 +26,18 @@ import java.lang.reflect.Method;
 /**
  * all Activity must extends the class (not include listActivity)
  * 使用注意事项：<br>
- * <b>1.必须实现函数{@link #setRootView}}，设置root视图<br>
- * <b>2.系统会自动调用{@link #initView, initData, initEvent}, 无需手动调用}<br>
- * <b>3.在initView(), initData(), initEvent()中需要时实现不同的功能，分别是：初始化视图view，初始化视图数据，初始化事件如点击事件等<br>
- * <b>4.基类提供屏幕长宽，可直接调用<br>
- * <b>5.如果需要显示toast（调用ViewInjectUtils），loadingdialog可以直接调用<br>
- * <b>6.监听网络变化，使用方法onEventMainThread(NetStateChangeEvent event)即可,并注册EventBus.register(this);
- * <b>7.初始化视图采用AnnotateUtil注入框架，可替代findViewById， 使用方法简单直接,如下(click是该组件的单击属性)：<br>
+ * <b>1.必须实现函数{@link #provideContentViewId} or {@link #provideContentViewLayout} 其返回值不一样，设置root视图<br>
+ * <b>2.基类提供屏幕长宽，可直接调用<br>
+ * <b>3.如果需要显示toast（调用ViewInjectUtils），loadingdialog可以直接调用<br>
+ * <b>4.监听网络变化，使用方法onEventMainThread(NetStateChangeEvent event)即可,并注册EventBus.register(this);
+ * <b>5.初始化视图采用AnnotateUtil注入框架，可替代findViewById， 使用方法简单直接,如下(click是该组件的单击属性)：<br>
  *		.@BindView(id = R.id.more1, click = true)<br>
  *  	private Button btn1;
  * <br>
  * @author blakequ Blakequ@gmail.com
  *
  */
-public abstract class BaseActivity extends AppCompatActivity implements OnClickListener,
-	DataRefreshTask, BaseUITask, IActivity{
+public abstract class BaseActivity extends AppCompatActivity implements OnClickListener, IActivity, BaseTask{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,54 +46,41 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 		if (BaseApplication.instance.isLockScreen()) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
 		}
-		if (BuildConfig.DEBUG) {
+		if (provideContentViewId() != 0){
+			setContentView(provideContentViewId());
+		}else if (provideContentViewLayout() != null){
+			setContentView(provideContentViewLayout());
+		}else {
+			throw new IllegalStateException("No main layout, you should set provideContentViewId or provideContentViewLayout");
+		}
+		if (BaseApplication.DEBUG_MODE) {
 			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
 		} else {
 			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
 		}
 		setOverflowShowingAlways();
-		BaseApplication.refreshList.add(this);
-		setRootView(); // 必须放在annotate之前调用
+		BaseApplication.totalList.add(this);
 		AnnotateUtil.initBindView(this); // 必须放在initialization之前调用
-		initialize();
-	}
-	
-	@Override
-	public void initialize() {
-		// TODO Auto-generated method stub
-		initView();
-		initData();
-		initEvent();
-	}
-	
-	@Override
-	public void initView() {
-		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public View provideContentViewLayout(){
+		return null;
+	}
+	
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		BaseApplication.refreshList.remove(this);
+		View rootView = GarbageUtils.getRootView(this);
+		if (rootView != null){
+			GarbageUtils.unBindDrawables(rootView);
+			GarbageUtils.unBindListener(rootView);
+		}
+		BaseApplication.totalList.remove(this);
 		BaseApplication.getRefWatcher(this).watch(this);
 	}
 
-	@Override
-	public void onLowMemory() {
-		super.onLowMemory();
-	}
-
-	@Override
-	public void onTrimMemory(int level) {
-		super.onTrimMemory(level);
-	}
-
-	public void replaceFragment(int id_content, Fragment fragment) {
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.replace(id_content, fragment);
-		transaction.commit();
-	}
 
 	/**
 	 * 通过Class跳转界面
@@ -211,41 +190,5 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 			}
 		}
 		return super.onMenuOpened(featureId, menu);
-	}
-	
-	/**
-	 * 在使用过程中只需要判断ErrorCode.DEFAULT_VALUE（正常），不正常则显示提示
-	 */
-	@Override
-	public void refresh(TaskMessage msg, Object... param) {
-		// TODO Auto-generated method stub
-		int errorCode = msg.errorCode;
-		switch(errorCode){
-			case ErrorCode.DEFAULT_VALUE:
-				break;
-			case ErrorCode.PARA_EXCEPTION:
-				Logger.e("input params error");
-				break;
-			case ErrorCode.NET_LINK_EXCEPTION:
-				Logger.e("net connect error");
-				break;
-			case ErrorCode.PARSER_JSON_EXCEPTION:
-				Logger.e("json parser exception");
-				break;
-			case ErrorCode.PARSER_CLASS_NOT_FOUND:
-				Logger.e("class parser exception");
-				break;
-			case ErrorCode.OTHER_DEFAULT_EXCEPTION:
-				Logger.e("other exception");
-				break;
-			case ErrorCode.OTHER_TASK_NOT_FOUND:
-				Logger.e("main service task not found exception");
-				break;
-			case ErrorCode.SESSION_OUT_OF_TIME:
-				Logger.e("session out of time");
-				break;
-			default:
-				break;
-		}
 	}
 }

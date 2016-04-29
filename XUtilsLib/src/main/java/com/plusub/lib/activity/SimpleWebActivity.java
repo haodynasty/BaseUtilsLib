@@ -1,10 +1,7 @@
 package com.plusub.lib.activity;
 
-import com.plusub.lib.util.StringUtils;
-
-import android.R;
 import android.graphics.Bitmap;
-import android.view.Gravity;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -12,9 +9,10 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
+import com.plusub.lib.util.StringUtils;
 
 /**
  * <p>Here is an example of subclassing:</p>
@@ -35,7 +33,19 @@ public class SimpleWebActivity extends BaseActivity {
 	private String url;
 
 	@Override
-	public void setRootView() {
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		initView();
+		initEvent();
+	}
+
+	@Override
+	public int provideContentViewId() {
+		return 0;
+	}
+
+	@Override
+	public View provideContentViewLayout() {
 		// TODO Auto-generated method stub
 		RelativeLayout rl = new RelativeLayout(this);
 		rl.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -52,10 +62,9 @@ public class SimpleWebActivity extends BaseActivity {
 		
 		rl.addView(mWebView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		rl.addView(mLoadingView, rlParams);
-		setContentView(rl);
+		return rl;
 	}
 	
-	@Override
 	public void initView() {
 		url = getIntent().getStringExtra(URL);
 		if (!StringUtils.isEmpty(url)) {
@@ -63,11 +72,7 @@ public class SimpleWebActivity extends BaseActivity {
 		}
 	}
 
-	@Override
-	public void initData() {
-	}
 
-	@Override
 	public void initEvent() {
 		// TODO Auto-generated method stub
 		mWebView.getSettings().setJavaScriptEnabled(true);
@@ -108,5 +113,10 @@ public class SimpleWebActivity extends BaseActivity {
 				dismissProgress();
 			}
 		});
+	}
+
+	@Override
+	public void onTrimMemory() {
+
 	}
 }
