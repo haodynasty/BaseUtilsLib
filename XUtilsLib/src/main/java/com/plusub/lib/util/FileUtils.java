@@ -40,7 +40,7 @@ public class FileUtils {
 	 */
 	public static String getSDCardPath(){
 		if(isSDCardAvailable()){
-			return Environment.getExternalStorageDirectory().getPath();
+			return Environment.getExternalStorageDirectory().getAbsolutePath();
 		}
 		return "";
 	}
@@ -183,7 +183,7 @@ public class FileUtils {
 	 * @param file
 	 */
 	public static void deleteFile(File file) {
-		if (!file.exists()) {
+		if (file == null || !file.exists()) {
 			return;
 		}
 		if (file.isFile()) {
@@ -195,6 +195,31 @@ public class FileUtils {
 			}
 		}
 		file.delete();
+	}
+
+	/**
+	 * 删除文件或目录
+	 * @param file
+	 * @param deleteThisPath 是否删除文件夹路径
+	 */
+	public static void deleteFile(File file, boolean deleteThisPath) {
+		if (file != null && file.exists()) {
+			if (file.isDirectory()) {// 处理目录
+				File files[] = file.listFiles();
+				for (int i = 0; i < files.length; i++) {
+					deleteFile(files[i], true);
+				}
+			}
+			if (deleteThisPath) {
+				if (!file.isDirectory()) {// 如果是文件，删除
+					file.delete();
+				} else {// 目录
+					if (file.listFiles().length == 0) {// 目录下没有文件或者目录，删除
+						file.delete();
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -644,5 +669,26 @@ public class FileUtils {
 			} 
 		}
 		return filePath;
+	}
+
+	/**
+	 * 获取文件夹大小
+	 * @param file File实例
+	 * @return long 单位字节
+	 * @throws Exception
+	 */
+	public static long getFolderSize(File file)throws Exception{
+		long size = 0;
+		if (file != null && file.exists()){
+			File[] fileList = file.listFiles();
+			for (int i = 0; i < fileList.length; i++){
+				if (fileList[i].isDirectory()){
+					size = size + getFolderSize(fileList[i]);
+				} else{
+					size = size + fileList[i].length();
+				}
+			}
+		}
+		return size;
 	}
 }

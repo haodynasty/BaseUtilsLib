@@ -24,7 +24,6 @@ import android.os.Build;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.plusub.lib.util.CommException;
 import com.plusub.lib.util.ResourceUtils;
 
 import java.lang.reflect.Field;
@@ -103,14 +102,13 @@ public class AnnotateUtil {
      * 
      * @param view
      *            侵入式的view，例如使用inflater载入的view
-     * @throws CommException 
      */
-    public static void initBindView(View view) throws CommException {
+    public static void initBindView(View view) throws IllegalArgumentException {
         Context cxt = view.getContext();
         if (cxt instanceof Activity) {
             initBindView((Activity) cxt);
         } else {
-            throw new CommException("the view don't have root view");
+            throw new IllegalArgumentException("the view don't have root view");
         }
     }
 

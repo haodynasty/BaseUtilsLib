@@ -402,6 +402,11 @@ public final class Logger {
             return this;
         }
 
+        public Settings showThreadInfo(){
+            showThreadInfo = true;
+            return this;
+        }
+
         public Settings setMethodCount(int methodCount) {
             validateMethodCount(methodCount);
             this.methodCount = methodCount;

@@ -16,12 +16,10 @@
  */
 package com.plusub.lib.annotate;
 
-import com.plusub.lib.util.CommException;
 import com.plusub.lib.util.JSONUtils;
 import com.plusub.lib.util.logger.Logger;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -65,10 +63,9 @@ public class JsonParserUtils {
 	  * @param className 解析对应的实体对象
 	 * @param jsonString JSON字符串
 	 * @return
-	 * @throws JSONException
-	 * @throws CommException
+	 * @throws Exception
 	 */
-	public static Object initEntityParser(Class className, String jsonString) throws JSONException, CommException{
+	public static Object initEntityParser(Class className, String jsonString) throws Exception{
         Object obj = getInstance(className.getName());
 		JsonParserClass jsonClass =  obj.getClass().getAnnotation(JsonParserClass.class);
 		boolean isClassList = false;
@@ -85,10 +82,9 @@ public class JsonParserUtils {
 	 * @param className 解析对应的实体对象
 	 * @param jsonString JSON字符串
 	 * @param isParserList 是否将类className解析为一个数组（如果使用了@JsonParserClass则忽略）
-	 * @throws JSONException 
-	 * @throws CommException 
+	 * @throws Exception
 	 */
-	public static Object initEntityParser(Class className, String jsonString, boolean isParserList) throws CommException, JSONException{
+	public static Object initEntityParser(Class className, String jsonString, boolean isParserList) throws Exception{
         JSONObject jo = new JSONObject(jsonString);
         Object obj = getInstance(className.getName());
         
@@ -184,7 +180,7 @@ public class JsonParserUtils {
 		Object pageObj = null;
 		try {
 			pageObj = parserField(getInstance(field.getType().getName()), jo);
-		} catch (CommException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			if (showLog) {
 				e.printStackTrace();
@@ -202,9 +198,9 @@ public class JsonParserUtils {
 	 * @param obj
 	 * @param jsonObj
 	 * @return
-	 * @throws CommException 
+	 * @throws Exception
 	 */
-	private static Object parserField(Object obj, JSONObject jsonObj) throws CommException{
+	private static Object parserField(Object obj, JSONObject jsonObj) throws Exception{
 		Field[] fields = obj.getClass().getDeclaredFields();
 		 if (fields != null && fields.length > 0) {
 	            for (Field field : fields) {
@@ -265,7 +261,7 @@ public class JsonParserUtils {
 								setFieldValue(obj, field, defaultValue);
 							}
 	                    } catch (Exception e) {
-	                    	throw new CommException("parser "+obj.getClass().getName()+" error! \n"+e.getMessage(), CommException.PARSER_JSON_EXCEPTION);
+	                    	throw new RuntimeException("parser "+obj.getClass().getName()+" error! \n"+e.getMessage());
 	                    }
 	                }else{ //没有设置JsonParserField的字段，全部采用默认
 	                	setSingleValue(obj, field, jsonObj, field.getName());
@@ -283,9 +279,9 @@ public class JsonParserUtils {
 	 * @param field 实体的域
 	 * @param jsonObj JSON对象
 	 * @param name 待解析的JSON键
-	 * @throws CommException
+	 * @throws Exception
 	 */
-	private static void setSingleValue(Object object, Field field, JSONObject jsonObj, String name) throws CommException{
+	private static void setSingleValue(Object object, Field field, JSONObject jsonObj, String name) throws Exception{
 		//判断是否为基本类型
 		if (!isBaseDataType(field.getType())) {
 			JSONObject jo = JSONUtils.getJSONObject(jsonObj, name, null);
@@ -306,15 +302,15 @@ public class JsonParserUtils {
 	 * <p>Description: 
 	 * @param className
 	 * @return
-	 * @throws CommException
+	 * @throws Exception
 	 */
-	private static Object getInstance(String className) throws CommException{
+	private static Object getInstance(String className) throws Exception{
 		Object obj = null;
 		try {
 			obj = Class.forName(className).newInstance();
 		} catch (Exception e) {
 			// TODO: handle exception
-			throw new CommException("getInstance init class "+className+" error! \n"+e.getMessage(), CommException.PARSER_JSON_EXCEPTION);
+			throw new RuntimeException("getInstance init class "+className+" error! \n"+e.getMessage());
 		}
 		return obj;
 	}
@@ -407,7 +403,6 @@ public class JsonParserUtils {
 	 * @param field 待转换类型
 	 * @param defaultValue 值类型(在Json转换中都是String类型)
 	 * @return 将defaultValue转换为obj的类型
-	 * @throws CommException 
 	 */
 	private static Object getType(Field field, Object defaultValue, String fieldName){
 		Object value = defaultValue;

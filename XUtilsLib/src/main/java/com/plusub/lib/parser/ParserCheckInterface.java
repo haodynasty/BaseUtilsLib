@@ -18,8 +18,6 @@ package com.plusub.lib.parser;
 
 import org.json.JSONObject;
 
-import com.plusub.lib.util.CommException;
-
 /**
  * @ClassName: EntityCheckInterface
  * @Description: TODO
@@ -38,7 +36,6 @@ public interface ParserCheckInterface {
 	 * <p>Description: 
 	 * @param jo
 	 * @return JSON数据是否正确，不正确返回false，正确返回true
-	 * @throws CommException 如果不正确必须抛出异常，指明异常码:{@link #ErrorCode}}
 	 */
-	public boolean checkJsonError(JSONObject jo) throws CommException;
+	public boolean checkJsonError(JSONObject jo) throws Exception;
 }

@@ -25,7 +25,6 @@ import com.plusub.lib.BuildConfig;
 import com.plusub.lib.activity.BaseTask;
 import com.plusub.lib.task.TaskMessage;
 import com.plusub.lib.task.UserTask;
-import com.plusub.lib.util.CommException;
 import com.plusub.lib.util.logger.LogLevel;
 import com.plusub.lib.util.logger.Logger;
 

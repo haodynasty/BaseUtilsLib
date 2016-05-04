@@ -169,9 +169,8 @@ public class SystemUtils {
 
     /**
      * 获取当前应用程序的版本名字
-     * @throws CommException
      */
-    public static String getAppVersionName(Context context) throws CommException {
+    public static String getAppVersionName(Context context) {
         String version = "";
         try {
             PackageInfo pinfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
@@ -179,25 +178,21 @@ public class SystemUtils {
                 version = pinfo.versionName;
             }
         } catch (PackageManager.NameNotFoundException e) {
-            throw new CommException(SystemUtils.class.getName()
-                    + "the application not found");
+            e.printStackTrace();
         }
         return version;
     }
 
     /**
      * 获取当前应用程序的版本号
-     * @throws CommException
      */
-    public static int getAppVersionCode(Context context) throws CommException {
+    public static int getAppVersionCode(Context context) {
         try {
             PackageInfo pinfo = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
             if (pinfo != null){
                 return pinfo.versionCode;
             }
         } catch (PackageManager.NameNotFoundException e) {
-            throw new CommException(SystemUtils.class.getName()
-                    + "the application not found");
         }
         return 0;
     }
@@ -244,18 +239,17 @@ public class SystemUtils {
      *
      * @param context
      * @param pkgName
-     * @throws CommException
      */
-    public static String getSign(Context context, String pkgName) throws CommException {
+    public static String getSign(Context context, String pkgName) {
         try {
             PackageInfo pis = context.getPackageManager()
                     .getPackageInfo(pkgName,
                             PackageManager.GET_SIGNATURES);
             return hexdigest(pis.signatures[0].toByteArray());
         } catch (PackageManager.NameNotFoundException e) {
-            throw new CommException(SystemUtils.class.getName() + "the "
-                    + pkgName + "'s application not found");
+            e.printStackTrace();
         }
+        return "";
     }
 
     /**
