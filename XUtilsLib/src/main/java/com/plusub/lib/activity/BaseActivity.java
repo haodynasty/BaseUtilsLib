@@ -12,12 +12,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.Window;
 
-import com.plusub.lib.BaseApplication;
 import com.plusub.lib.activity.lifecycle.LifecycleDispatcher;
 import com.plusub.lib.annotate.AnnotateUtil;
 import com.plusub.lib.util.GarbageUtils;
-import com.plusub.lib.util.logger.LogLevel;
-import com.plusub.lib.util.logger.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -44,9 +41,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		LifecycleDispatcher.get().onActivityCreated(this, savedInstanceState);
-//		if (BaseApplication.instance.isLockScreen()) {
-//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//		}
+
 		if (provideContentViewId() != 0){
 			setContentView(provideContentViewId());
 		}else if (provideContentViewLayout() != null){
@@ -54,13 +49,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 		}else {
 			throw new IllegalStateException("No main layout, you should set provideContentViewId or provideContentViewLayout");
 		}
-		if (BaseApplication.DEBUG_MODE) {
-			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
-		} else {
-			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
-		}
+
 		setOverflowShowingAlways();
-//		BaseApplication.totalList.add(this);
 		AnnotateUtil.initBindView(this); // 必须放在initialization之前调用
 	}
 	
@@ -74,8 +64,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 			GarbageUtils.unBindListener(rootView);
 		}
 		LifecycleDispatcher.get().onActivityDestroyed(this);
-//		BaseApplication.totalList.remove(this);
-//		BaseApplication.getRefWatcher(this).watch(this);
 	}
 
 	@Override

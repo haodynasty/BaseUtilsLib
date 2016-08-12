@@ -76,7 +76,7 @@ public class Tab1Fragment extends BaseFragment {
 				startActivity(RefreshActivity.class);
 				break;
 			case R.id.tab1_bt3:
-				startActivity(LDrawerActivity.class);
+				startActivity(ImageSelectActivity.class);
 				break;
 			case R.id.tab1_bt4:
 				 Intent intent = new Intent(getActivity(), SimpleWebActivity.class);

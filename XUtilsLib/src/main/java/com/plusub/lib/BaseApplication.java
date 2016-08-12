@@ -365,11 +365,11 @@ public abstract class BaseApplication extends Application {
 					activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 				}
 
-//				if (BaseApplication.DEBUG_MODE) {
-//					Logger.init(activity.getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
-//				} else {
-//					Logger.init(activity.getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
-//				}
+				if (BaseApplication.DEBUG_MODE) {
+					Logger.init(activity.getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
+				} else {
+					Logger.init(activity.getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
+				}
 
 				if (activity instanceof BaseTask){
 					BaseTask task = (BaseTask) activity;
@@ -491,11 +491,11 @@ public abstract class BaseApplication extends Application {
 					BaseTask task = (BaseTask) fragment;
 					BaseApplication.totalList.remove(task);
 				}
-//				if (BaseApplication.DEBUG_MODE) {
-//					Logger.init(fragment.getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
-//				} else {
-//					Logger.init(fragment.getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
-//				}
+				if (BaseApplication.DEBUG_MODE) {
+					Logger.init(fragment.getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
+				} else {
+					Logger.init(fragment.getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
+				}
 
 				if (fragmentLifecycleCallbacks != null){
 					fragmentLifecycleCallbacks.onFragmentCreated(fragment, savedInstanceState);

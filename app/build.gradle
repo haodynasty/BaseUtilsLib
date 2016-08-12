@@ -156,18 +156,18 @@ dependencies {
     compile 'com.facebook.stetho:stetho-okhttp3:1.3.1'
 
     //fresco
-    compile 'com.facebook.fresco:fresco:0.12.0'
+    compile "com.facebook.fresco:fresco:$FRESCO_VERSION"
     // 在 API < 14 上的机器支持 WebP 时，需要添加
-//    compile 'com.facebook.fresco:animated-base-support:0.12.0'
+//    compile "com.facebook.fresco:animated-base-support:$FRESCO_VERSION"
     // 支持 GIF 动图，需要添加
-    compile 'com.facebook.fresco:animated-gif:0.12.0'
+    compile "com.facebook.fresco:animated-gif:$FRESCO_VERSION"
     // 支持 WebP （静态图+动图），需要添加
-//    compile 'com.facebook.fresco:animated-webp:0.12.0'
-//    compile 'com.facebook.fresco:webpsupport:0.12.0'
+    compile "com.facebook.fresco:animated-webp:$FRESCO_VERSION"
+    compile "com.facebook.fresco:webpsupport:$FRESCO_VERSION"
     // 仅支持 WebP 静态图，需要添加
-//    compile 'com.facebook.fresco:webpsupport:0.12.0'
+//    compile "com.facebook.fresco:webpsupport:$FRESCO_VERSION"
     //替换默认的下载方式
-    compile "com.facebook.fresco:imagepipeline-okhttp3:0.12.0"
+    compile "com.facebook.fresco:imagepipeline-okhttp3:$FRESCO_VERSION"
 
 //test provided
     //发布到360版本的用Compile在编译和打包都包含fastjson库，非360用provided只是在编译时使用包，不打包

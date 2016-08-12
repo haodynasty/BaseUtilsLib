@@ -68,7 +68,7 @@ public class MainApplication extends BaseApplication {
 			@Override
 			public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 				super.onActivityCreated(activity, savedInstanceState);
-				Logger.i("activity lifecycle onActivityCreated");
+				Logger.i("activity lifecycle onActivityCreated "+isActivityDead(activity));
 			}
 		});
 

@@ -37,6 +37,7 @@ import com.plusub.lib.BaseApplication;
 import com.plusub.lib.util.FileUtils;
 import com.plusub.lib.util.ImageUtils;
 import com.plusub.lib.util.StringUtils;
+import com.plusub.lib.util.logger.Logger;
 import com.plusub.lib.view.R;
 import com.plusub.lib.view.ViewInjectUtils;
 
@@ -120,7 +121,8 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 	 * @return 如果为获取到，则返回空字符串
 	 */
 	public String getCameraFilePath(){
-		if (StringUtils.isEmpty(tempPath)) {
+		if (StringUtils.isEmpty(tempPath) || !new File(tempPath).exists()) {
+            Logger.e("ImageSelectPopupWindow", "getCameraFilePath tempPath="+tempPath+" or not exist");
 			return "";
 		}
 
@@ -129,7 +131,10 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 			Bitmap bmp = ImageUtils.getBitmapFromPath(tempPath);
 			bmp = ImageUtils.toRotate(bmp, degree);
 			ImageUtils.saveBitmapToFile(bmp, new File(tempPath));
-			if (bmp == null) return "";
+			if (bmp == null){
+                Logger.e("ImageSelectPopupWindow", "getCameraFilePath bmp is null");
+                return "";
+            }
 		}
 		return tempPath;
 	}
@@ -143,6 +148,7 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 	 */
 	public String getAlbumFilePath(Intent data){
 		if (data == null) {
+            Logger.e("ImageSelectPopupWindow", "getAlbumFilePath data is null");
 			return "";
 		}
 		String filepath = "";
@@ -172,6 +178,7 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 	 */
 	public String getCropImgFilePath(Intent data){
 		if (data == null) {
+            Logger.e("ImageSelectPopupWindow", "getCropImgFilePath data is null");
 			return "";
 		}
 		try {
@@ -212,6 +219,7 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 	public void cropImage(String imagePath, int outputX, int outputY) {
 		File file = new File(imagePath);
 		if (!file.exists()){
+			Logger.e("ImageSelectPopupWindow", "crop image is not exist");
 			return;
 		}
 		Uri uri = Uri.fromFile(file);
@@ -245,8 +253,7 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 			dismiss();
 		} else if (id == R.id.pop_from_camera) {
 			if (FileUtils.isSDCardAvailable()) {
-				Intent getImageByCamera = new Intent(
-						"android.media.action.IMAGE_CAPTURE");
+				Intent getImageByCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 				tempPath = BaseApplication.mCachePath
 						+ "/picture_temp_"+System.currentTimeMillis()+".png";
 				File output_dir = new File(BaseApplication.mCachePath);
@@ -261,7 +268,6 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 			} else {
 				ViewInjectUtils.showCustomToast(context, "请确认已经插入SD卡");
 			}
-		} else {
 		}
 	}
 	

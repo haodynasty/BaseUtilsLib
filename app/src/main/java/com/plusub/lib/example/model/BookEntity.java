@@ -42,6 +42,7 @@ public class BookEntity {
 	@JsonParserField(praserKey="summary")
 	private String authorInfo;
 	private String price;
+
 	public String getAuthor() {
 		return author;
 	}

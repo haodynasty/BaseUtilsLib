@@ -51,9 +51,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.tab1.ImageSelectActivity"/>
         <activity android:name=".ui.tab1.RefreshActivity"></activity>
-        <activity android:name=".ui.tab1.LDrawerActivity"
-            android:theme="@style/ActivityActionBarTheme"></activity>
         <activity android:name="com.plusub.lib.activity.SimpleWebActivity"></activity>
         <activity android:name="com.plusub.lib.activity.BrowserActivity"/>
         <activity android:name=".ui.tab1.loadview.LoadActivity"/>

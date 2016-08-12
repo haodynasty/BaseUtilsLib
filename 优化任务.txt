@@ -2,4 +2,4 @@
 2.图片和http请求优化
 3.测试用例编写（集成化测试与自动化测试）
 4.测试ImageSelectPopupWindow类的全部方法+压缩图片，测试ImageUtils.saveBitmapToFile方法
-5.测试生命周期监听ActivityLifecycleCallbacks
+5.测试生命周期监听ActivityLifecycleCallbacks ok

@@ -15,8 +15,6 @@ import com.plusub.lib.BaseApplication;
 import com.plusub.lib.activity.lifecycle.LifecycleDispatcher;
 import com.plusub.lib.annotate.AnnotateUtil;
 import com.plusub.lib.util.GarbageUtils;
-import com.plusub.lib.util.logger.LogLevel;
-import com.plusub.lib.util.logger.Logger;
 
 import java.lang.reflect.Field;
 
@@ -118,12 +116,6 @@ public abstract class BaseFragment extends Fragment  implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		LifecycleDispatcher.get().onFragmentCreated(this, savedInstanceState);
-//		BaseApplication.totalList.add(this);
-		if (BaseApplication.DEBUG_MODE) {
-			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
-		} else {
-			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
-		}
 	}
 
 	@Override
@@ -172,8 +164,6 @@ public abstract class BaseFragment extends Fragment  implements OnClickListener,
 			GarbageUtils.unBindDrawables(mBaseView);
 			GarbageUtils.unBindListener(mBaseView);
 		}
-//		BaseApplication.totalList.remove(this);
-//		BaseApplication.getRefWatcher(getActivity()).watch(this);
 	}
 
 	private void removeContext(){

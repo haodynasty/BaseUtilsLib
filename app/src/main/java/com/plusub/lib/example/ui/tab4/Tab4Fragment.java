@@ -16,12 +16,15 @@
  */
 package com.plusub.lib.example.ui.tab4;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.plusub.lib.activity.BaseFragment;
 import com.plusub.lib.annotate.BindView;
 import com.plusub.lib.example.R;
@@ -38,9 +41,16 @@ import java.io.InputStream;
  * @version v1.0
  */
 public class Tab4Fragment extends BaseFragment {
-	
-	@BindView(id = R.id.frament4_tv)
-	private TextView mTvContent;
+
+	@BindView(id = R.id.tab4_iv_img1)
+	private SimpleDraweeView mImgView1;
+	@BindView(id = R.id.tab4_iv_img2)
+	private SimpleDraweeView mImgView2;
+	@BindView(id = R.id.tab4_iv_gif1)
+	private SimpleDraweeView mGifView1;
+	@BindView(id = R.id.tab4_iv_gif2)
+	private SimpleDraweeView mGifView2;
+
 
 	public void initData() {
 		// TODO Auto-generated method stub
@@ -112,13 +122,27 @@ public class Tab4Fragment extends BaseFragment {
 	@Override
 	protected void initView(View parentView) {
 		// TODO Auto-generated method stub
+		Uri uri = Uri.parse("res://" + getActivity().getPackageName() + "/" + R.drawable.ic_person_head_bg);
+		mImgView1.setImageURI(uri);
+		Uri uri1 = Uri.parse("res://" + getActivity().getPackageName() + "/" + R.drawable.ic_person_head_bg_webp);
+		mImgView2.setImageURI(uri1);
 
+		Uri uri2 = Uri.parse("res://" + getActivity().getPackageName() + "/" + R.drawable.ic_gif);
+		DraweeController controller = Fresco.newDraweeControllerBuilder()
+				.setUri(uri2)
+				.setAutoPlayAnimations(true)//自动播放动画
+				.build();
+		mGifView1.setController(controller);
+
+		Uri uri3 = Uri.parse("res://" + getActivity().getPackageName() + "/" + R.drawable.ic_gif_webp);
+		DraweeController controller2 = Fresco.newDraweeControllerBuilder()
+				.setUri(uri3)
+				.setAutoPlayAnimations(true)//自动播放动画
+				.build();
+		mGifView2.setController(controller2);
 	}
 
-	private void jsonParser(String jsonStr){
-		//error
-		
-	}
+
 
 	//从assets 文件夹中获取文件并读取数据  
     public String getFromAssets(String fileName){  

@@ -1,5 +1,6 @@
 package com.plusub.lib.example.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.view.ViewPager;
@@ -204,6 +205,7 @@ public class MainActivity extends ToolbarActivity {
 	public int provideContentViewId() {
 		return R.layout.activity_main;
 	}
+
 
 	/** 
 	* 定义一个倒计时的内部类 

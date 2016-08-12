@@ -31,7 +31,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="侧滑栏"/>
+        android:text="图片选择"/>
     <Button 
         android:id="@+id/tab1_bt5"
         android:layout_width="fill_parent"
