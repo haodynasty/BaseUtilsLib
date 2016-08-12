@@ -1,17 +1,23 @@
 package com.plusub.lib.util.logger;
 
 /**
- * @author Orhan Obut
+ * @author blakequ
  */
 public enum LogLevel {
 
-	/**
-	 * Prints all logs
-	 */
-	FULL,
+	/**Prints all logs*/
+	FULL(0),
+	/**print all log but not include info*/
+	VERBOSE(1),
+	/**any print warning and error*/
+	WARNING(2),
+	/**only print error*/
+	ERROR(3),
+	/**not print any log*/
+	NONE(4);
 
-	/**
-	 * No log will be printed
-	 */
-	NONE
+	public int type;
+	LogLevel(int type){
+		this.type = type;
+	}
 }

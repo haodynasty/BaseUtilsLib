@@ -17,25 +17,15 @@
 package com.plusub.lib.view;
 
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.plusub.lib.view.R;
-import com.plusub.lib.util.LogUtils;
-
-import de.keyboardsurfer.android.widget.crouton.Configuration;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
+import com.plusub.lib.util.logger.Logger;
 
 /**
  * 
@@ -78,33 +68,6 @@ public class ViewInjectUtils {
 				onNegativeClickListener);
 		mDialog.show();
 		return mDialog;
-	}
-	
-	/**
-	 * 显示Crouton风格提示
-	 * <p>Title: showCrouton
-	 * <p>Description: 
-	 * @param text
-	 * @param viewGroupResId(0 is default) The resource id of the <b>ViewGroup<b> that this Crouton should be added to
-	 * 此组件id必须是ViewGroup的，如LinearLayout等
-	 */
-	@SuppressLint("ResourceAsColor")
-	public static void showCrouton(Activity context, String text, int viewGroupResId){
-		//setting configuration of show time or Animation
-		Configuration croutonConfiguration = new Configuration.Builder()
-			.setDuration(2000)
-			.build();
-		//setting style
-		Style croutonStyle = new Style.Builder()
-			.setBackgroundColor(R.color.blue_light)
-			.setConfiguration(croutonConfiguration)
-			.setHeight(100)
-			.build();
-		if (viewGroupResId <= 0) {
-			Crouton.makeText(context, text, croutonStyle).show();
-		}else{
-			Crouton.makeText(context, text, croutonStyle, viewGroupResId).show();
-		}
 	}
 	
 	/**
@@ -151,7 +114,7 @@ public class ViewInjectUtils {
 	 */
 	public static void showLoadingDialog(Context context, String text) {
 		if (context instanceof Application) {
-			LogUtils.e("ViewInjectUtils", "传入的参数context不能是Application, 它无法attach to view");
+			Logger.e("ViewInjectUtils", "传入的参数context不能是Application, 它无法attach to view");
 			return;
 		}
 		if (mLoadingDialog != null) {
@@ -170,7 +133,7 @@ public class ViewInjectUtils {
 	 */
 	public static void showLoadingDialogNotCancel(Context context, String text) {
 		if (context instanceof Application) {
-			LogUtils.e("ViewInjectUtils", "传入的参数context不能是Application, 它无法attach to view");
+			Logger.e("ViewInjectUtils", "传入的参数context不能是Application, 它无法attach to view");
 			return;
 		}
 		if (mLoadingDialog != null) {
@@ -198,42 +161,6 @@ public class ViewInjectUtils {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-
-	/**
-	 * 显示网络设置
-	 * <p>
-	 * Title: showNetSettingDialog
-	 * <p>
-	 * Description:
-	 * 
-	 * @param context
-	 */
-	public static void showNetSettingDialog(final Context context) {
-		BaseDialog mDialogAttention = BaseDialog.getDialog(context, context.getString(R.string.net_not_avail), 
-				context.getString(R.string.net_setting), 
-				context.getString(R.string.cancel), 
-				new OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						dialog.dismiss();
-					}
-				}, 
-				context.getString(R.string.confirm),
-				new OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						context.startActivity(new Intent(
-								Settings.ACTION_WIRELESS_SETTINGS));
-						dialog.dismiss();
-					}
-				});
-		mDialogAttention.show();
 	}
 	
 }

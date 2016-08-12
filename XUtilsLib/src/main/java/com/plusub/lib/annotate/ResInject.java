@@ -16,7 +16,7 @@
 package com.plusub.lib.annotate;
 
 
-import com.plusub.lib.bean.ResType;
+import com.plusub.lib.model.ResType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

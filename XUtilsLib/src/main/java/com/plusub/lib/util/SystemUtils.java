@@ -12,6 +12,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.inputmethod.InputMethodManager;
 
 import com.plusub.lib.util.logger.Logger;
@@ -36,7 +37,11 @@ public class SystemUtils {
     public static String getPhoneIMEI(Context cxt) {
         TelephonyManager tm = (TelephonyManager) cxt
                 .getSystemService(Context.TELEPHONY_SERVICE);
-        return tm.getDeviceId();
+        String deviceId = tm.getDeviceId();
+        if( TextUtils.isEmpty(deviceId) ){
+            deviceId = android.provider.Settings.Secure.getString(cxt.getContentResolver(),android.provider.Settings.Secure.ANDROID_ID);
+        }
+        return deviceId;
     }
 
     /**

@@ -21,10 +21,19 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
-import android.os.Environment;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.plusub.lib.activity.BaseTask;
+import com.plusub.lib.activity.lifecycle.ActivityLifecycleCallbacksCompat;
+import com.plusub.lib.activity.lifecycle.FragmentLifecycleCallbacks;
+import com.plusub.lib.activity.lifecycle.LifecycleDispatcher;
 import com.plusub.lib.annotate.JsonParserUtils;
 import com.plusub.lib.exp.UEHandler;
 import com.plusub.lib.service.BaseService;
@@ -32,13 +41,11 @@ import com.plusub.lib.task.UserTask;
 import com.plusub.lib.util.FileUtils;
 import com.plusub.lib.util.JSONUtils;
 import com.plusub.lib.util.StrictModeUtil;
-import com.plusub.lib.util.StringUtils;
 import com.plusub.lib.util.logger.LogLevel;
 import com.plusub.lib.util.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,9 +60,9 @@ public abstract class BaseApplication extends Application {
 	private String sessionId;
 	public static boolean DEBUG_MODE = true;
 	public static BaseApplication instance;
-    /**缓存路径*/
+    /**缓存路径，内部路径*/
     public static String mCachePath;
-    /**错误日志路径*/
+    /**错误日志路径，内部路径*/
     public static String errorLogPath ;
     /**未捕获异常处理*/
     private UEHandler ueHandler;
@@ -65,6 +72,8 @@ public abstract class BaseApplication extends Application {
 	public static List<UserTask> taskList = new LinkedList<UserTask>(); 
 	/**基本任务列表*/
 	public static List<BaseTask> totalList = new LinkedList<BaseTask>();
+	private ActivityLifecycleCallbacksCompat activityLifecycleCallbacks;
+	private FragmentLifecycleCallbacks fragmentLifecycleCallbacks;
 
     public static BaseApplication getInstance(){
     	return instance;
@@ -97,6 +106,25 @@ public abstract class BaseApplication extends Application {
 		}else {
 			Logger.init(getClass().getSimpleName()).hideThreadInfo().setMethodCount(1).setLogLevel(LogLevel.NONE);
 		}
+
+		//生命周期拦截器
+		registerContextCallback();
+	}
+
+	/**
+	 * 设置全局activity生命周期监听
+	 * @param activityLifecycleCallbacks
+	 */
+	public void setActivityLifecycleCallbacks(ActivityLifecycleCallbacksCompat activityLifecycleCallbacks) {
+		this.activityLifecycleCallbacks = activityLifecycleCallbacks;
+	}
+
+	/**
+	 * 设置全局frgament生命周期监听
+	 * @param fragmentLifecycleCallbacks
+	 */
+	public void setFragmentLifecycleCallbacks(FragmentLifecycleCallbacks fragmentLifecycleCallbacks) {
+		this.fragmentLifecycleCallbacks = fragmentLifecycleCallbacks;
 	}
 
 	/**
@@ -178,20 +206,6 @@ public abstract class BaseApplication extends Application {
 	}
 
 	/**
-	 * 设置全局session id
-	 * <p>Title: setSessionId
-	 * <p>Description: 
-	 * @param sessionId
-	 */
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
-	}
-
-	public String getSessionId(){
-		return this.sessionId;
-	}
-
-	/**
 	 * 
 	 * Title: exit
 	 * Description:should invoke this method before exit app
@@ -223,18 +237,11 @@ public abstract class BaseApplication extends Application {
 	 * <p>Description:
 	 */
     private void initEnv() {
-        String mAppId = this.getPackageName();
-        if (StringUtils.isEmpty(mAppId)) {
-			mAppId = "log";
-		}
-		if (FileUtils.isSDCardAvailable()){
-			String sdcard = Environment.getExternalStorageDirectory().getAbsolutePath();
-			errorLogPath = sdcard+"/"+mAppId+"/log/error.log";
-			mCachePath = FileUtils.getOutCacheDir(this).getAbsolutePath();
-			FileUtils.createNewFile(new File(errorLogPath));
-		}else {
-			errorLogPath = FileUtils.getInnerFileDir(this).getAbsolutePath();
-			mCachePath = FileUtils.getInnerCacheDir(this).getAbsolutePath();
+		mCachePath = FileUtils.getInnerCacheDir(this).getAbsolutePath();
+		if (Build.VERSION.SDK_INT >= 23){
+			errorLogPath = FileUtils.getInnerFileDir(this).getAbsolutePath()+"/error.log";
+		}else{
+			errorLogPath = FileUtils.getOutCacheDir(this)+"/error.log";
 		}
     }
     
@@ -262,6 +269,7 @@ public abstract class BaseApplication extends Application {
 		ActivityManager activityManager = (ActivityManager) context
 				.getSystemService(ACTIVITY_SERVICE);
 		activityManager.killBackgroundProcesses(context.getPackageName());
+		android.os.Process.killProcess(android.os.Process.myPid());
 		System.exit(0);
 	}
 
@@ -343,5 +351,191 @@ public abstract class BaseApplication extends Application {
 			return true;
 		}
 		return false;
+	}
+
+
+	/**
+	 * 注册全局Activity和Fragment的生命周期监听器
+	 */
+	private void registerContextCallback(){
+		LifecycleDispatcher.get().registerActivityLifecycleCallbacks(this, new ActivityLifecycleCallbacksCompat() {
+			@Override
+			public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+				if (BaseApplication.instance.isLockScreen()) {
+					activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+				}
+
+//				if (BaseApplication.DEBUG_MODE) {
+//					Logger.init(activity.getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
+//				} else {
+//					Logger.init(activity.getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
+//				}
+
+				if (activity instanceof BaseTask){
+					BaseTask task = (BaseTask) activity;
+					BaseApplication.totalList.add(task);
+				}
+
+				if (activityLifecycleCallbacks != null){
+					activityLifecycleCallbacks.onActivityCreated(activity, savedInstanceState);
+				}
+			}
+
+			@Override
+			public void onActivityStarted(Activity activity) {
+				if (activityLifecycleCallbacks != null){
+					activityLifecycleCallbacks.onActivityStarted(activity);
+				}
+			}
+
+			@Override
+			public void onActivityResumed(Activity activity) {
+				if (activityLifecycleCallbacks != null){
+					activityLifecycleCallbacks.onActivityResumed(activity);
+				}
+			}
+
+			@Override
+			public void onActivityPaused(Activity activity) {
+				if (activityLifecycleCallbacks != null){
+					activityLifecycleCallbacks.onActivityPaused(activity);
+				}
+			}
+
+			@Override
+			public void onActivityStopped(Activity activity) {
+				if (activityLifecycleCallbacks != null){
+					activityLifecycleCallbacks.onActivityStopped(activity);
+				}
+			}
+
+			@Override
+			public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+				if (activityLifecycleCallbacks != null){
+					activityLifecycleCallbacks.onActivitySaveInstanceState(activity, outState);
+				}
+			}
+
+			@Override
+			public void onActivityDestroyed(Activity activity) {
+				if (activity instanceof BaseTask){
+					BaseTask task = (BaseTask) activity;
+					BaseApplication.totalList.remove(task);
+				}
+
+				BaseApplication.getRefWatcher(BaseApplication.this).watch(activity);
+				if (activityLifecycleCallbacks != null){
+					activityLifecycleCallbacks.onActivityDestroyed(activity);
+				}
+			}
+		});
+
+		LifecycleDispatcher.get().registerFragmentLifecycleCallbacks(this, new FragmentLifecycleCallbacks(){
+			@Override
+			public void onFragmentDestroyed(Fragment fragment) {
+				if (fragment instanceof BaseTask){
+					BaseTask task = (BaseTask) fragment;
+					BaseApplication.totalList.remove(task);
+				}
+				BaseApplication.getRefWatcher(BaseApplication.this).watch(fragment);
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentDestroyed(fragment);
+				}
+			}
+
+			@Override
+			public void onFragmentAttach(Fragment fragment, Context context) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentAttach(fragment, context);
+				}
+			}
+
+			@Override
+			public void onFragmentDetach(Fragment fragment) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentDetach(fragment);
+				}
+			}
+
+			@Override
+			public void onFragmentActivityCreated(Fragment fragment, Bundle savedInstanceState) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentActivityCreated(fragment, savedInstanceState);
+				}
+			}
+
+			@Override
+			public void onFragmentCreateView(Fragment fragment, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentCreateView(fragment, inflater, container, savedInstanceState);
+				}
+			}
+
+			@Override
+			public void onFragmentDestroyView(Fragment fragment) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentDestroyView(fragment);
+				}
+			}
+
+			@Override
+			public void onFragmentViewCreated(Fragment fragment, View view, Bundle savedInstanceState) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentViewCreated(fragment, view, savedInstanceState);
+				}
+			}
+
+			@Override
+			public void onFragmentCreated(Fragment fragment, Bundle savedInstanceState) {
+				if (fragment instanceof BaseTask){
+					BaseTask task = (BaseTask) fragment;
+					BaseApplication.totalList.remove(task);
+				}
+//				if (BaseApplication.DEBUG_MODE) {
+//					Logger.init(fragment.getClass().getSimpleName()).setLogLevel(LogLevel.FULL).hideThreadInfo();
+//				} else {
+//					Logger.init(fragment.getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
+//				}
+
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentCreated(fragment, savedInstanceState);
+				}
+			}
+
+			@Override
+			public void onFragmentStarted(Fragment fragment) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentStarted(fragment);
+				}
+			}
+
+			@Override
+			public void onFragmentResumed(Fragment fragment) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentResumed(fragment);
+				}
+			}
+
+			@Override
+			public void onFragmentPaused(Fragment fragment) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentPaused(fragment);
+				}
+			}
+
+			@Override
+			public void onFragmentStopped(Fragment fragment) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentStopped(fragment);
+				}
+			}
+
+			@Override
+			public void onFragmentSaveInstanceState(Fragment fragment, Bundle outState) {
+				if (fragmentLifecycleCallbacks != null){
+					fragmentLifecycleCallbacks.onFragmentSaveInstanceState(fragment, outState);
+				}
+			}
+		});
 	}
 }

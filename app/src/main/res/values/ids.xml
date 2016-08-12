@@ -9,16 +9,8 @@
     <item type="id" name="common_page"></item>
     <item type="id" name="common_listview"></item>
     <item type="id" name="common_item_text"></item>
+    <item type="id" name="common_viewpager"></item>
     <item type="id" name="listview"/>
-    
-    <!-- head action bar -->
-    <item type="id" name="common_head_layout"></item>
-    <item type="id" name="header_layout"></item>
-    <item type="id" name="header_layout_holder"></item>
-    <item type="id" name="header_layout_middle"></item>
-    <item type="id" name="header_layout_middle_container"></item>
-    <item type="id" name="btn_confirm"></item>
-    <item type="id" name="btn_cancel"></item>
     
     <!-- welcome -->
     

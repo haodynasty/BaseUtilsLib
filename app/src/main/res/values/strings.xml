@@ -26,4 +26,7 @@
     <string name="app_description">Android drawer icon with material design animation</string>
     <string name="drawer_open">drawer_open</string>
     <string name="drawer_close">drawer_close</string>
+
+    <string name="net_error">网络中断，请检查您的网络状态</string>
+    <string name="error_unkown">未知异常</string>
 </resources>

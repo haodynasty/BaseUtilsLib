@@ -16,8 +16,6 @@
  */
 package com.plusub.lib.view;
 
-import com.plusub.lib.view.R;
-
 import android.content.Context;
 import android.widget.TextView;
 
@@ -43,6 +41,7 @@ public class RotateLoadingDialog extends BaseDialog {
 		setContentView(R.layout.common_rotate_loading_dialog);
 		mImageView = (RotateImageView) findViewById(R.id.loadingdialog_fiv_icon);
 		mTextView = (TextView) findViewById(R.id.loadingdialog_htv_text);
+		mImageView.setAnimationRepeatCount(-1);
 		mImageView.startAnimation();
 		mTextView.setText(mText);
 	}

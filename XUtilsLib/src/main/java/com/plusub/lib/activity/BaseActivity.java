@@ -4,7 +4,6 @@ package com.plusub.lib.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -14,6 +13,7 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 
 import com.plusub.lib.BaseApplication;
+import com.plusub.lib.activity.lifecycle.LifecycleDispatcher;
 import com.plusub.lib.annotate.AnnotateUtil;
 import com.plusub.lib.util.GarbageUtils;
 import com.plusub.lib.util.logger.LogLevel;
@@ -43,9 +43,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		if (BaseApplication.instance.isLockScreen()) {
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);  
-		}
+		LifecycleDispatcher.get().onActivityCreated(this, savedInstanceState);
+//		if (BaseApplication.instance.isLockScreen()) {
+//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//		}
 		if (provideContentViewId() != 0){
 			setContentView(provideContentViewId());
 		}else if (provideContentViewLayout() != null){
@@ -59,13 +60,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 			Logger.init(getClass().getSimpleName()).setLogLevel(LogLevel.NONE).hideThreadInfo();
 		}
 		setOverflowShowingAlways();
-		BaseApplication.totalList.add(this);
+//		BaseApplication.totalList.add(this);
 		AnnotateUtil.initBindView(this); // 必须放在initialization之前调用
-	}
-
-	@Override
-	public View provideContentViewLayout(){
-		return null;
 	}
 	
 	@Override
@@ -77,10 +73,46 @@ public abstract class BaseActivity extends AppCompatActivity implements OnClickL
 			GarbageUtils.unBindDrawables(rootView);
 			GarbageUtils.unBindListener(rootView);
 		}
-		BaseApplication.totalList.remove(this);
-		BaseApplication.getRefWatcher(this).watch(this);
+		LifecycleDispatcher.get().onActivityDestroyed(this);
+//		BaseApplication.totalList.remove(this);
+//		BaseApplication.getRefWatcher(this).watch(this);
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		LifecycleDispatcher.get().onActivityStarted(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		LifecycleDispatcher.get().onActivityResumed(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		LifecycleDispatcher.get().onActivityPaused(this);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		LifecycleDispatcher.get().onActivityStopped(this);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		LifecycleDispatcher.get().onActivitySaveInstanceState(this, outState);
+	}
+
+
+	@Override
+	public View provideContentViewLayout(){
+		return null;
+	}
 
 	/**
 	 * 通过Class跳转界面

@@ -473,10 +473,44 @@ public class ImageUtils {
         return false;
     }
 
+    public static boolean saveBitmapToFile(Bitmap bitmap, File file){
+        BufferedOutputStream bof = null;
+        if (bitmap == null || file == null) {
+            return false;
+        }
+        File newFile = file;
+        if (file.exists()){
+            newFile = new File(file.getAbsolutePath());
+            file.delete();
+        }
+        try {
+            bof = new BufferedOutputStream(new FileOutputStream(newFile));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bof);
+            bof.flush();
+            return true;
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally{
+            if (bof != null) {
+                try {
+                    bof.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * save image to application folder
-     * for example: <p>mnt\sdcard\pic\name.jpg</p>
-     * you should input the para saveBitmapToFolder(bitmap, "mnt\sdcard\pic", "name.jpg")
+     * for example: <p>mnt/sdcard/pic/name.jpg</p>
+     * you should input the para saveBitmapToFolder(bitmap, "mnt/sdcard/pic", "name.jpg")
      * @param bitmap
      * @param path
      * @param name

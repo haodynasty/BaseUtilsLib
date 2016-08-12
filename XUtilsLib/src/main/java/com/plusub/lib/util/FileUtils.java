@@ -37,6 +37,7 @@ public class FileUtils {
 	
 	/**
 	 * Gets the Android external storage directory
+	 * 注意：要访问必须有文件读取权限
 	 */
 	public static String getSDCardPath(){
 		if(isSDCardAvailable()){
@@ -70,6 +71,7 @@ public class FileUtils {
 	 * 获取外部sdcard上私有存储缓存位置(Android文件夹是隐藏文件夹，用户无法操作)，path:/sdcard/Android/date/package_name/cache
 	 * <br>notice:如果我们想缓存图片等比较耗空间的文件，推荐放在getExternalCacheDir()所在的文件下面，这个文件和getCacheDir()很像，
 	 * 都可以放缓存文件，在APP被卸载的时候，都会被系统删除，而且缓存的内容对其他APP是相对私有的,**应用卸载的时候会被删除**
+	 * 注意：要访问必须有文件读取权限
 	 * @param context
 	 * @return if sdcard is not available, will return null
 	 */
@@ -83,6 +85,7 @@ public class FileUtils {
 	/**
 	 * 获取外部sdcard上私有存储图片路径(Android文件夹是隐藏文件夹，用户无法操作)，path:/sdcard/Android/date/package_name/files/Pictures
 	 * **应用卸载的时候会被删除**
+	 * 注意：要访问必须有文件读取权限
 	 * @param context
 	 * @return if sdcard is not available, will return null
 	 */
@@ -95,6 +98,7 @@ public class FileUtils {
 
 	/**
 	 * check the sdcard is mounted and available
+	 * 注意：要访问必须有文件读取权限
 	 * @return
 	 */
 	public static boolean isSDCardAvailable(){
@@ -109,6 +113,7 @@ public class FileUtils {
 	
 	/**
 	 * create public picture file if not exists
+	 * 注意：要访问必须有文件读取权限
 	 * @return if the file exists return true, otherwise, return false and create folder
 	 */
 	@TargetApi(Build.VERSION_CODES.FROYO)

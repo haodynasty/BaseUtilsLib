@@ -18,19 +18,19 @@ import android.widget.RemoteViews;
 
 import com.plusub.lib.util.DownloadUtils;
 import com.plusub.lib.util.FileUtils;
-import com.plusub.lib.util.LogUtils;
 import com.plusub.lib.util.MD5Encryptor;
 import com.plusub.lib.util.StringUtils;
 import com.plusub.lib.util.ToastUtils;
+import com.plusub.lib.util.logger.Logger;
 import com.plusub.lib.view.R;
 
 import java.io.File;
 
 /**
- * app升级服务, 使用前必须在Manifest中进行注册<b>com.plusub.lib.service.AppUpgradeService
+ * app升级服务, 使用前必须在Manifest中进行注册com.plusub.lib.service.AppUpgradeService
  * <ul>
- * <br>使用方法如下：
- * <pre class="prettyprint">
+ * 使用方法如下：
+ * <pre>
  * Intent intent = new Intent(getApplicationContext(), AppUpgradeService.class);
  * intent.putExtra(AppUpgradeService.EXTRA_DOWLOAD_URL, url);
  * startService(intent);
@@ -70,7 +70,7 @@ public class AppUpgradeService extends Service {
                 install(destFile);
                 break;
             case DOWNLOAD_FAIL:
-                ToastUtils.show(getApplicationContext(), R.string.app_upgrade_download_fail);
+                ToastUtils.show(getApplicationContext(), R.string.plusub_base_app_upgrade_download_fail);
                 mNotificationManager.cancel(mNotificationId);
                 break;
             default:
@@ -98,7 +98,7 @@ public class AppUpgradeService extends Service {
             mNotification.contentView.setViewVisibility(R.id.app_upgrade_progressblock, View.GONE);
             mNotification.defaults = Notification.DEFAULT_SOUND;
             mNotification.contentIntent = mPendingIntent;
-            mNotification.contentView.setTextViewText(R.id.app_upgrade_progresstext, getResources().getString(R.string.app_upgrade_download_over));
+            mNotification.contentView.setTextViewText(R.id.app_upgrade_progresstext, getResources().getString(R.string.plusub_base_app_upgrade_download_over));
             mNotificationManager.notify(mNotificationId, mNotification);
             if (destFile.exists() && destFile.isFile() && checkApkFile(destFile.getPath())) {
                 Message msg = mHandler.obtainMessage();
@@ -121,7 +121,7 @@ public class AppUpgradeService extends Service {
             mDownloadUrl = intent.getStringExtra(EXTRA_DOWLOAD_URL);
             if (!StringUtils.isEmpty(mDownloadUrl)){
                 if (Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
-                    destDir = new File(FileUtils.getSDCardPath().getAbsolutePath());
+                    destDir = new File(FileUtils.getSDCardPath());
                     if (destDir.exists()) {
                         File destFile = new File(destDir.getPath() + "/" + MD5Encryptor.GetMD5Code(mDownloadUrl));
                         if (destFile.exists()) {
@@ -129,7 +129,7 @@ public class AppUpgradeService extends Service {
                         }
                     }
                 }else {
-                    LogUtils.e("AppUpgradeService", "AppUpgradeService sdcard not exist, can not download apk file");
+                    Logger.e("AppUpgradeService", "AppUpgradeService sdcard not exist, can not download apk file");
                     stopSelf();
                     return super.onStartCommand(intent, flags, startId);
                 }
@@ -146,7 +146,7 @@ public class AppUpgradeService extends Service {
                 mPendingIntent = PendingIntent.getActivity(AppUpgradeService.this, R.string.app_name, completingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 mNotification.icon = R.drawable.ic_launcher;
-                mNotification.tickerText = getResources().getString(R.string.app_upgrade_download_begin);
+                mNotification.tickerText = getResources().getString(R.string.plusub_base_app_upgrade_download_begin);
                 mNotification.contentIntent = mPendingIntent;
                 mNotification.contentView.setProgressBar(R.id.app_upgrade_progressbar, 100, 0, true);
                 mNotification.contentView.setTextViewText(R.id.app_upgrade_progresstext, "0%");
@@ -154,11 +154,11 @@ public class AppUpgradeService extends Service {
                 mNotificationManager.notify(mNotificationId, mNotification);
                 new AppUpgradeThread().start();
             }else{
-                LogUtils.e("AppUpgradeService", "AppUpgradeService download url is null");
+                Logger.e("AppUpgradeService", "AppUpgradeService download url is null");
                 stopSelf();
             }
         }else{
-            LogUtils.e("AppUpgradeService", "AppUpgradeService intent is null");
+            Logger.e("AppUpgradeService", "AppUpgradeService intent is null");
             stopSelf();
         }
 
@@ -170,7 +170,7 @@ public class AppUpgradeService extends Service {
         @Override
         public void run() {
             if (destDir == null) {
-                destDir = new File(FileUtils.getSDCardPath().getAbsolutePath());
+                destDir = new File(FileUtils.getSDCardPath());
             }
             if (destDir.exists() || destDir.mkdirs()) {
                 destFile = new File(destDir.getPath() + "/" + MD5Encryptor.GetMD5Code(mDownloadUrl));

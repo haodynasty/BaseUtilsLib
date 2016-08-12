@@ -4,9 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/background_normal"
     android:orientation="vertical" >
-    <include 
-        android:id="@id/common_head_layout"
-        layout="@layout/include_header"/>
     <TextView 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -37,12 +34,6 @@
         android:text="侧滑栏"/>
     <Button 
         android:id="@+id/tab1_bt5"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Tab切换组件"/>
-    <Button 
-        android:id="@+id/tab1_bt6"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:descendantFocusability= "blocksDescendants"
@@ -11,11 +12,12 @@
         android:padding="8dp"
         android:background="@drawable/bg_listitem_user_selector"
         android:orientation="horizontal" >
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/list_iv_head"
             android:layout_width="@dimen/common_head_height"
             android:layout_height="@dimen/common_head_height"
-            android:src="@drawable/ic_person_default_headview_bg"/>
+            fresco:placeholderImage="@drawable/ic_person_default_headview_bg"
+            />
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -34,7 +36,7 @@
 		        	    android:id="@+id/list_tv_title"
 		        	    android:layout_width="wrap_content"
 		        	    android:layout_height="wrap_content"
-		        	    android:text="@string/test"
+		        	    android:text="test"
 		        	    android:maxEms="7"
 		        	    android:singleLine="true"
 		        	    android:textColor="@color/text_title"
@@ -44,7 +46,7 @@
 		        	    android:layout_weight="1"
 		        	    android:layout_width="wrap_content"
 		        	    android:layout_height="wrap_content"
-		        	    android:text="@string/test"
+		        	    android:text="test"
 		        	    android:gravity="right"
 		        	    android:textColor="@color/text_title"
 		        	    android:textSize="@dimen/typeface_small_14"/>
@@ -58,7 +60,7 @@
         	    android:maxLines="3"
         	    android:layout_width="fill_parent"
         	    android:layout_height="wrap_content"
-        	    android:text="@string/test"
+        	    android:text="test"
         	    android:textColor="@color/text_title"
         	    android:textSize="@dimen/typeface_medium_16"/>
     	</RelativeLayout>

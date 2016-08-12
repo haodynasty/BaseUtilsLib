@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#6fdfde</color>
+    <color name="colorPrimaryDark">#6fdfde</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryPress">#6FD3DF</color>
+
     <!-- drop down list header font color -->
     <color name="drop_down_list_header_font_color">#000000</color>
     <!-- drop down list header second font color -->

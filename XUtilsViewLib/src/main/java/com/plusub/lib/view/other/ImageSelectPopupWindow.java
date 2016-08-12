@@ -40,22 +40,19 @@ import com.plusub.lib.util.StringUtils;
 import com.plusub.lib.view.R;
 import com.plusub.lib.view.ViewInjectUtils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * @ClassName: ImageSelectPopupWindow
  * @Description: TODO 只需要实现onActivityResult方法，从相机的时候请求码requestCode为{@link #FROM_CANMERA}，从相册是{@link #FROM_ALBUM},如果剪切则为{@link #FROM_CROP}
  * <li>如果从相机中获取，照片缓存路径从{@link #getCameraFilePath()}获取</li>
  * <li>如果从相册中获取，图片缓存路径从{@link #getAlbumFilePath(Intent)}获取</li>
- * <li>获取图片后剪切路径，调用{@link #cropImage(String, int, int)},然后从{@link #getCropImgFilePath(Intent)}获取图片路径</>
+ * <li>获取图片后剪切路径，调用{@link #cropImage(String, int, int)},然后从{@link #getCropImgFilePath(Intent)}获取图片路径
  * 
  * <p>注意：</p>
  * 如果需要复写选择button的颜色，只需要复写color.xml中的bg_bt_blue_normal和bg_bt_blue_press
  * <p>如果需要复写整个dialog样式，则覆盖布局文件include_pop_upload_image.xml
+ * 选择的图片未曾压缩需要自己压缩
  * @author qh@plusub.com
  * @date： 
  *     <b>文件创建时间：</b>2015-4-24 下午5:09:41<br>
@@ -86,17 +83,17 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 		setAnimationStyle(R.style.popwin_anim_style);
 		setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 		setOnDismissListener(new OnDismissListener(){
-	
+
 			@Override
 			public void onDismiss() {
 				// TODO Auto-generated method stub
 //				mCoverBoard.setVisibility(View.GONE);
 				backgroundAlpha(1f);
 			}
-			
+
 		});
 	}
-	
+
 	@Override
 	public void showAtLocation(View parent, int gravity, int x, int y) {
 		// TODO Auto-generated method stub
@@ -115,11 +112,11 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
         lp.alpha = bgAlpha; //0.0-1.0
         context.getWindow().setAttributes(lp);
 	}
-	
+
 	/**
-	 * 从相机拍照后，获取压缩后照片路径
+	 * 从相机拍照后，获取未压缩照片路径
 	 * <p>Title: getCameraFilePath
-	 * <p>Description: 
+	 * <p>Description:
 	 * @return 如果为获取到，则返回空字符串
 	 */
 	public String getCameraFilePath(){
@@ -128,39 +125,19 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 		}
 
 		int degree = ImageUtils.readPictureDegree(tempPath);
-		Bitmap Bmp = ImageUtils.getSmallBitmap(tempPath);
-		if (degree > 0){
-			Bmp = ImageUtils.toRotate(Bmp, degree);
-		}
-		File file = new File(tempPath);
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(file);
-			if (null != fos) {
-				Bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
-				fos.flush();
-				fos.close();
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			try {
-				fos.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+		if (degree > 0){//旋转的图片要纠正
+			Bitmap bmp = ImageUtils.getBitmapFromPath(tempPath);
+			bmp = ImageUtils.toRotate(bmp, degree);
+			ImageUtils.saveBitmapToFile(bmp, new File(tempPath));
+			if (bmp == null) return "";
 		}
 		return tempPath;
 	}
-	
+
 	/**
-	 * 从相册获取图片
+	 * 从相册获取未压缩图片
 	 * <p>Title: getAlbumFilePath
-	 * <p>Description: 
+	 * <p>Description:
 	 * @param data 回调onActivityResult回传的intent数据
 	 * @return 如果data为空，则返回空字符串
 	 */
@@ -169,22 +146,15 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 			return "";
 		}
 		String filepath = "";
-		Bitmap Bmp = null;
 		Cursor cursor = null;
 		try {
-			Bmp = MediaStore.Images.Media.getBitmap(
-					context.getContentResolver(), data.getData());
-			Bmp=ImageUtils.zoomBitmap(Bmp, 100, 100);
 			Uri originalUri=data.getData();
 			String[] proj = {MediaStore.Images.Media.DATA};
-			cursor = context.getContentResolver().query(originalUri, proj, null, null, null); 
+			cursor = context.getContentResolver().query(originalUri, proj, null, null, null);
 			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 			cursor.moveToFirst();
 			filepath = cursor.getString(column_index);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -196,7 +166,7 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 	}
 
 	/**
-	 * 获取剪裁后的图片
+	 * 获取剪裁后的未压缩图片
 	 * @param data 回调onActivityResult回传的intent数据
 	 * @return 如果data为空，则返回空字符串
 	 */
@@ -214,29 +184,18 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 				Bundle extra = data.getExtras();
 				if (extra != null) {
 					photo = (Bitmap) extra.get("data");
-					ByteArrayOutputStream stream = new ByteArrayOutputStream();
-					photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
 				}
 			}
 			File path = new File(BaseApplication.mCachePath);
-			// 图片目录
-			String filepath = BaseApplication.mCachePath + "/picture_crop_"+System.currentTimeMillis()+".png";
-			File file = new File(filepath);
 			if (!path.exists()) {
 				path.mkdirs();
 			}
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-			FileOutputStream fos = null;
-			fos = new FileOutputStream(file);
-			if (null != fos) {
-				photo.compress(Bitmap.CompressFormat.PNG, 100, fos);
-				fos.flush();
-				fos.close();
-			}
 
-			return filepath;
+			// 图片目录
+			String fileName = "picture_crop_"+System.currentTimeMillis()+".png";
+			String filePath = BaseApplication.mCachePath + "/"+fileName;
+			boolean result = ImageUtils.saveBitmapToFolder(photo, BaseApplication.mCachePath, fileName);
+			if (result) return filePath;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -272,8 +231,8 @@ public class ImageSelectPopupWindow extends PopupWindow implements OnClickListen
 		intent.putExtra("return-data", true);
 		context.startActivityForResult(intent, FROM_CROP);
 	}
-	
-	
+
+
 	@Override
 	public void onClick(View v) {
 		int id = v.getId();

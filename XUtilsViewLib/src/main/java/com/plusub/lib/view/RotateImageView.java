@@ -18,7 +18,9 @@ package com.plusub.lib.view;
 
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
@@ -36,6 +38,7 @@ public class RotateImageView extends ImageView {
 
 	private RotateAnimation mAnimation;
 	private boolean mIsHasAnimation;
+	private boolean isRunning; //animation is running
 	private Context context;
 	private long mDuration = 700L;
 	private Interpolator mInterpolator;
@@ -43,13 +46,14 @@ public class RotateImageView extends ImageView {
 	private int mMode;
 	private float startDegrees;
 	private float endDegrees;
-	
+	private OnAnimationListener animationListener;
+
 	public RotateImageView(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		init(context);
 	}
-	
+
 	public RotateImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
@@ -59,7 +63,7 @@ public class RotateImageView extends ImageView {
 		super(context, attrs, defStyle);
 		init(context);
 	}
-	
+
 	private void init(Context context){
 		this.context = context;
 		mInterpolator = new LinearInterpolator();
@@ -67,13 +71,14 @@ public class RotateImageView extends ImageView {
 		mMode = Animation.RESTART;
 		startDegrees = 0f;
 		endDegrees = 359f;
+		isRunning = false;
 	}
-	
+
 
 	/**
 	 * 动画持续时间,毫秒
 	 * <p>Title: setAnimationDuration
-	 * <p>Description: 
+	 * <p>Description:
 	 * @param mDuration
 	 */
 	public void setAnimationDuration(long mDuration) {
@@ -83,7 +88,7 @@ public class RotateImageView extends ImageView {
 	/**
 	 * 动画加速器，默认LinearInterpolator
 	 * <p>Title: setAnimationInterpolator
-	 * <p>Description: 
+	 * <p>Description:
 	 * @param mInterpolator
 	 */
 	public void setAnimationInterpolator(Interpolator mInterpolator) {
@@ -93,7 +98,7 @@ public class RotateImageView extends ImageView {
 	/**
 	 * 动画重复次数，-1为循环，0为循环一次，默认0
 	 * <p>Title: setAnimationRepeatCount
-	 * <p>Description: 
+	 * <p>Description:
 	 * @param mRepeatCount
 	 */
 	public void setAnimationRepeatCount(int mRepeatCount) {
@@ -103,37 +108,37 @@ public class RotateImageView extends ImageView {
 	/**
 	 * 动画模式, 默认Animation.RESTART
 	 * <p>Title: setAnimationMode
-	 * <p>Description: 
+	 * <p>Description:
 	 * @param mMode Animation.REVERSE or Animation.RESTART
 	 */
 	public void setAnimationMode(int mMode) {
 		this.mMode = mMode;
 	}
-	
+
 	/**
 	 * 动画开始角度，默认0
 	 * <p>Title: setAnimationStartDegrees
-	 * <p>Description: 
+	 * <p>Description:
 	 * @param startDegrees
 	 */
 	public void setAnimationStartDegrees(float startDegrees) {
 		this.startDegrees = startDegrees;
 	}
-	
+
 	/**
 	 * 设置动画结束角度，默认359
 	 * <p>Title: setAnimationEndDegrees
-	 * <p>Description: 
+	 * <p>Description:
 	 * @param endDegrees 可为负数
 	 */
 	public void setAnimationEndDegrees(float endDegrees) {
 		this.endDegrees = endDegrees;
 	}
-	
+
 	/**
 	 * 设置动画参数
 	 * <p>Title: setAnimationParams
-	 * <p>Description: 
+	 * <p>Description:
 	 * @param mDuration
 	 * @param mRepeatCount -1则表示循环
 	 * @param startDegrees 动画开始角度
@@ -156,6 +161,32 @@ public class RotateImageView extends ImageView {
 			mAnimation.setInterpolator(mInterpolator);
 			mAnimation.setRepeatCount(mRepeatCount); //无限循环
 			mAnimation.setRepeatMode(mMode);
+			mAnimation.setFillAfter(true);//动画执行完毕后是否停在结束时的角度上(下次从这开始)
+			mAnimation.setAnimationListener(new Animation.AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {
+					isRunning = true;
+					if (animationListener != null){
+						animationListener.onAnimationStart(animation);
+					}
+				}
+
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					isRunning = false;
+					if (animationListener != null){
+						animationListener.onAnimationEnd(animation);
+					}
+				}
+
+				@Override
+				public void onAnimationRepeat(Animation animation) {
+					isRunning = true;
+					if (animationListener != null){
+						animationListener.onAnimationRepeat(animation);
+					}
+				}
+			});
 			setAnimation(mAnimation);
 		}
 	}
@@ -169,6 +200,7 @@ public class RotateImageView extends ImageView {
 		if (mIsHasAnimation) {
 			mIsHasAnimation = false;
 			setAnimation(null);
+			mAnimation.setAnimationListener(null);
 			mAnimation = null;
 		}
 	}
@@ -199,9 +231,33 @@ public class RotateImageView extends ImageView {
 	 * <p>Description:
 	 */
 	public void startAnimation() {
-		if (mIsHasAnimation) {
+		if (mIsHasAnimation && mAnimation != null) {
 			super.startAnimation(mAnimation);
+			isRunning = true;
 		}
+	}
+
+	/**
+	 * 暂停动画
+	 */
+	@TargetApi(Build.VERSION_CODES.FROYO)
+	public void stopAnimation(){
+		if (mIsHasAnimation && mAnimation != null){
+			mAnimation.cancel();
+			isRunning = false;
+		}
+	}
+
+	public void setAnimationListener(OnAnimationListener mAnimationListener) {
+		this.animationListener = mAnimationListener;
+	}
+
+	/**
+	 * the animation is Running
+	 * @return
+	 */
+	public boolean isRunning() {
+		return isRunning;
 	}
 
 	@SuppressLint("NewApi")
@@ -213,5 +269,34 @@ public class RotateImageView extends ImageView {
 		} else {
 			setRotateAnimation();
 		}
+	}
+
+	/**
+	 * <p>An animation listener receives notifications from an animation.
+	 * Notifications indicate animation related events, such as the end or the
+	 * repetition of the animation.</p>
+	 */
+	public static interface OnAnimationListener {
+		/**
+		 * <p>Notifies the start of the animation.</p>
+		 *
+		 * @param animation The started animation.
+		 */
+		void onAnimationStart(Animation animation);
+
+		/**
+		 * <p>Notifies the end of the animation. This callback is not invoked
+		 * for animations with repeat count set to INFINITE.</p>
+		 *
+		 * @param animation The animation which reached its end.
+		 */
+		void onAnimationEnd(Animation animation);
+
+		/**
+		 * <p>Notifies the repetition of the animation.</p>
+		 *
+		 * @param animation The animation which was repeated.
+		 */
+		void onAnimationRepeat(Animation animation);
 	}
 }

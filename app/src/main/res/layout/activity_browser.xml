@@ -5,8 +5,7 @@
     android:background="@color/background_normal"
     android:orientation="vertical" >
     <include 
-        android:id="@id/common_head_layout"
-        layout="@layout/include_header"/>
+        layout="@layout/include_headbar"/>
     <WebView
         android:id="@+id/activity_browser"
         android:layout_width="fill_parent"

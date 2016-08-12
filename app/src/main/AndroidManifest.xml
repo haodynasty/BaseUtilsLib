@@ -43,7 +43,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.plusub.lib.example.activity.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,15 +51,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.plusub.lib.example.activity.tab1.BrowserActivity"></activity>
-        <activity android:name="com.plusub.lib.example.activity.tab1.RefreshActivity"></activity>
-        <activity android:name="com.plusub.lib.example.activity.tab1.tab.TabActivity"></activity>
-        <activity android:name="com.plusub.lib.example.activity.tab1.LDrawerActivity"
+        <activity android:name=".ui.tab1.RefreshActivity"></activity>
+        <activity android:name=".ui.tab1.LDrawerActivity"
             android:theme="@style/ActivityActionBarTheme"></activity>
-        <service android:name="com.plusub.lib.example.service.RequestService"/>
         <activity android:name="com.plusub.lib.activity.SimpleWebActivity"></activity>
-        <activity android:name="com.plusub.lib.imagebroswer.ImageBrowserActivity"></activity>
-        <!--<activity android:name="com.plusub.lib.activity.BrowserActivity"/>-->
+        <activity android:name="com.plusub.lib.activity.BrowserActivity"/>
+        <activity android:name=".ui.tab1.loadview.LoadActivity"/>
+        <activity android:name=".ui.tab1.loadview.Example1Activity"/>
+        <activity android:name=".ui.tab1.loadview.Example2Activity"/>
+        <activity android:name=".ui.tab1.loadview.SimpleActivity"/>
     </application>
 
 </manifest>

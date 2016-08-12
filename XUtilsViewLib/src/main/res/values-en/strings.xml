@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="plusub_base_drop_down_list_header_default_text">Click to refresh&#8230;</string>
+    <string name="plusub_base_drop_down_list_header_pull_text">Drop Down to refresh&#8230;</string>
+    <string name="plusub_base_drop_down_list_header_release_text">Release to refresh&#8230;</string>
+    <string name="plusub_base_drop_down_list_header_loading_text">Loading&#8230;</string>
+    <string name="plusub_base_drop_down_list_footer_default_text">More</string>
+    <string name="plusub_base_drop_down_list_footer_loading_text">Loading&#8230;</string>
+    <string name="plusub_base_drop_down_list_footer_no_more_text">No More</string>
+    <string name="plusub_base_drop_down_update_at">last refresh time：</string>
+
+    <string name="plusub_base_app_upgrade_download_fail">Fail</string>
+    <string name="plusub_base_app_upgrade_download_over">Success</string>
+    <string name="plusub_base_app_upgrade_download_begin">Downloading...</string>
+    <string name="plusub_base_picture_read_failed">Fail</string>
+    <string name="plusub_base_picture_wait_for_download">Downloading...</string>
+</resources>

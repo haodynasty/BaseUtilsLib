@@ -3,6 +3,8 @@ package com.plusub.lib.util.logger;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.plusub.lib.BaseApplication;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -261,10 +263,43 @@ public final class Logger {
     }
 
     /**
+     * is show log or not
+     * @param logType
+     * @param logLevel
+     * @return
+     */
+    private static boolean isShowLog(int logType, LogLevel logLevel){
+        if (logLevel == LogLevel.FULL){
+            return true;
+        }else if (logLevel == LogLevel.NONE){
+            return false;
+        }else{
+            switch (logType){
+                case Log.VERBOSE:
+                case Log.DEBUG:
+                case Log.INFO:
+                case Log.ASSERT:
+                    if (logLevel == LogLevel.VERBOSE){
+                        return true;
+                    }
+                    break;
+                case Log.WARN:
+                    if (logLevel != LogLevel.ERROR){
+                        return true;
+                    }
+                    break;
+                case Log.ERROR:
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * This method is synchronized in order to avoid messy of logs' order.
      */
     private synchronized static void log(int logType, String tag, String message, int methodCount) {
-        if (settings.logLevel == LogLevel.NONE) {
+        if (!isShowLog(logType, settings.logLevel)) {
             return;
         }
         logTopBorder(logType, tag);
@@ -396,6 +431,14 @@ public final class Logger {
          * Determines how logs will printed
          */
         LogLevel logLevel = LogLevel.FULL;
+
+        public Settings(){
+            if (BaseApplication.DEBUG_MODE){
+                logLevel = LogLevel.FULL;
+            }else{
+                logLevel = LogLevel.NONE;
+            }
+        }
 
         public Settings hideThreadInfo() {
             showThreadInfo = false;

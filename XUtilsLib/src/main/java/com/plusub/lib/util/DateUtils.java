@@ -171,13 +171,14 @@ public class DateUtils {
 	 * <p>Description: 
 	 * @param startTimeMills
 	 * @param endTimeMills
-	 * @return 
+	 * @return 带有1位小数，表示半天
 	 */
-	public static int getTimeSpaceDays(long startTimeMills, long endTimeMills){
+	public static double getTimeSpaceDays(long startTimeMills, long endTimeMills){
 		if (endTimeMills < startTimeMills) {
 			return 0;
 		}
-		 return (int) ((endTimeMills-startTimeMills)/(24*60*60*1000));
+		double time = endTimeMills-startTimeMills;
+		return FormatUtils.roundingDouble(time/86400000L, 1);
 	}
 	
 	/**

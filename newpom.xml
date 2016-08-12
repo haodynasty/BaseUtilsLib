@@ -28,22 +28,39 @@
   </scm>
   <dependencies>
     <dependency>
-      <groupId>com.android.support</groupId>
-      <artifactId>appcompat-v7</artifactId>
-      <version>22.2.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>com.nineoldandroids</groupId>
       <artifactId>library</artifactId>
       <version>2.4.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.plusub.lib</groupId>
-      <artifactId>PlusubBaseLib</artifactId>
-      <version>1.0.2</version>
-      <type>aar</type>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-v4</artifactId>
+      <version>24.0.0-beta1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.facebook.fresco</groupId>
+      <artifactId>fresco</artifactId>
+      <version>0.10.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.greenrobot</groupId>
+      <artifactId>eventbus</artifactId>
+      <version>3.0.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>appcompat-v7</artifactId>
+      <version>22.2.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.retrofit2</groupId>
+      <artifactId>retrofit</artifactId>
+      <version>2.0.2</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

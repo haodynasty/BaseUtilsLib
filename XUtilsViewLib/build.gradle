@@ -11,7 +11,7 @@ android {
     buildToolsVersion "22.0.1"
     resourcePrefix "plusub_base_"
     defaultConfig {
-        minSdkVersion 7
+        minSdkVersion 9
         targetSdkVersion 22
         versionCode 1
         versionName version
@@ -30,6 +30,10 @@ android {
     }
 }
 
+tasks.withType(Javadoc){
+    failOnError = false
+}
+
 dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.nineoldandroids:library:2.4.0'
@@ -39,10 +43,10 @@ dependencies {
 //    compile fileTree(dir: 'libs', include:'*.jar')
 
     //2.依赖远程库
-    compile 'com.plusub.lib:PlusubBaseLib:1.0.2@aar' //这个要upload to jcenter的时候，必须用jar放到libs目录
+//    compile 'com.plusub.lib:PlusubBaseLib:1.0.2@aar' //这个要upload to jcenter的时候，必须用jar放到libs目录
 
     //3.依赖工程
-//    compile project(':XUtilsLib')
+    compile project(':XUtilsLib')
 }
 
 apply from:gradle.bintrayGradle

@@ -16,72 +16,94 @@
  */
 package com.plusub.lib.example;
 
+import android.app.Activity;
+import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.plusub.lib.BaseApplication;
-import com.plusub.lib.example.service.RequestService;
-import com.plusub.lib.util.CacheManager;
+import com.plusub.lib.activity.lifecycle.ActivityLifecycleCallbacksAdapter;
+import com.plusub.lib.activity.lifecycle.FragmentLifecycleCallbacksAdapter;
 import com.plusub.lib.util.FileUtils;
 import com.plusub.lib.util.JSONUtils;
-import com.plusub.lib.util.LogUtils;
+import com.plusub.lib.util.logger.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public class MainApplication extends BaseApplication {
 
-	private static MainApplication instance;
     public static String mAppId;
     public static String mDownloadPath;
     public static String mCachePath;
-    
-  //表情
-    public static List<String> mEmoticons = new ArrayList<String>();
-	public static Map<String, Integer> mEmoticonsId = new HashMap<String, Integer>();
-	public static List<String> mEmoticons_Zem = new ArrayList<String>();
-	public static List<String> mEmoticons_Zemji = new ArrayList<String>();
-
 
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		LogUtils.d("MainApplication", "[MainApplication] onCreate");
+		Logger.d("[MainApplication] onCreate");
 
 		instance = this;
 		initEnv();
-		getHttpCache();
-		
-		//关闭解析异常打印开关
-		JSONUtils.setPrintSwitch(true);
-		
-		//保存日志到SDcard
-//		LogUtils.setLogFilePath("bangbang/log");
-//		LogUtils.setSyns(true);
-		
-		//启动网络请求服务
-		RequestService.startService(this);
+
+		if (BuildConfig.DEBUG){
+			//关闭解析异常打印开关
+			JSONUtils.setPrintSwitch(true);
+			Stetho.initializeWithDefaults(this);
+		}else{
+			JSONUtils.setPrintSwitch(false);
+		}
+
+		//生命周期监听
+		setActivityLifecycleCallbacks(new ActivityLifecycleCallbacksAdapter() {
+			@Override
+			public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+				super.onActivityCreated(activity, savedInstanceState);
+				Logger.i("activity lifecycle onActivityCreated");
+			}
+		});
+
+		setFragmentLifecycleCallbacks(new FragmentLifecycleCallbacksAdapter(){
+			@Override
+			public void onFragmentCreateView(Fragment fragment, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+				super.onFragmentCreateView(fragment, inflater, container, savedInstanceState);
+				Logger.i("fragment lifecycle onFragmentCreateView");
+			}
+
+			@Override
+			public void onFragmentCreated(Fragment fragment, Bundle savedInstanceState) {
+				super.onFragmentCreated(fragment, savedInstanceState);
+				Logger.i("fragment lifecycle onFragmentCreated");
+			}
+		});
+
+		//网络图片加载
+		OkHttpClient.Builder builder = new OkHttpClient.Builder();
+		//设置网络请求日志
+		if (BuildConfig.DEBUG){
+			builder.networkInterceptors().add(new StethoInterceptor());
+			builder.addInterceptor(new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+				@Override
+				public void log(String message) {
+					Logger.i("OkHttp", message);
+				}
+			}).setLevel(HttpLoggingInterceptor.Level.BODY));//网络和日志拦截
+		}
+		ImagePipelineConfig config = OkHttpImagePipelineConfigFactory
+				.newBuilder(this, builder.build())
+				.build();
+		Fresco.initialize(this, config);
 	}
 
-	/**
-	 * 图片缓存
-	 * <p>Title: getImageCache
-	 * <p>Description: 
-	 * @return
-	 */
-	public ImageLoader getImageCache(){
-		return CacheManager.getImageCache(getApplicationContext());
-	}
-
-
-	public static MainApplication getInstance(){
-		return instance;
-	}
-	
 	/**
 	 * 初始化基本的变量（路径，appid）
 	 * <p>Title: initEnv
@@ -103,7 +125,7 @@ public class MainApplication extends BaseApplication {
 	public void doUncatchException(String savePath, long threadId,
 			String content) {
 		// TODO Auto-generated method stub
-		LogUtils.e("MainApplication", "[MainApplication] exception thread id:"+ threadId+" exception "+content);
+		Logger.e("[MainApplication] exception thread id:" + threadId + " exception " + content);
 		//主线程异常，退出应用并重启
 		if (threadId == 1) { 
 			// 此处示例发生异常后，重新启动应用
@@ -123,5 +145,10 @@ public class MainApplication extends BaseApplication {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+	@Override
+	public boolean isDebug() {
+		return BuildConfig.DEBUG;
+	}
+
 }

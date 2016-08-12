@@ -1,5 +1,9 @@
 # BaseUtilsLib
 the new frame for android
+开发必须遵循：[Android 开发最佳实践](https://github.com/futurice/android-best-practices/blob/master/translations/Chinese/README.cn.md)
+增加一条：所有的程序员都应该使用java和Android平台提供的预定义注解类型
+Android:在Android的包android.support.annotation;中有很多的注解类型（各种资源引用的限制IdRes,StyleRes,NonNull等）
+Java:在java.lang中有Deprecated，SuppressWarnings等
 
 建议使用的开发类
 ---------

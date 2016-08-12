@@ -26,7 +26,7 @@ import com.plusub.lib.util.SystemUtils;
  * <p>Here is an example of subclassing:</p>
  * must register in manifest.xml
  * <pre class="prettyprint">
- * {@link #launch(Context, String)} or{@link #launch(Context, String, boolean)}
+ * {@link #launch(Context, String, String)} or{@link #launch(Context, String, boolean,String)}
  *</pre>
  * Created by PLUSUB on 2015/10/23.
  */
@@ -39,14 +39,15 @@ public class BrowserActivity extends BaseActivity {
     private boolean isChanged = true;
     private boolean isCache = false;
 
-    public static void launch(Context context, String url) {
-        launch(context, url, false);
+    public static void launch(Context context, String url, String title) {
+        launch(context, url, false, title);
     }
 
-    public static void launch(Context context, String url, boolean isCache){
+    public static void launch(Context context, String url, boolean isCache, String title){
         Intent intent = new Intent(context, BrowserActivity.class);
         intent.putExtra("url", url);
         intent.putExtra("cache", isCache);
+        intent.putExtra("title", title);
         context.startActivity(intent);
     }
 
@@ -94,6 +95,7 @@ public class BrowserActivity extends BaseActivity {
                 actionBar.setDisplayShowHomeEnabled(true);
                 actionBar.setDisplayShowCustomEnabled(true);
                 actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setTitle(getIntent().getStringExtra("title"));
             }
         }
         url = getIntent().getStringExtra("url");

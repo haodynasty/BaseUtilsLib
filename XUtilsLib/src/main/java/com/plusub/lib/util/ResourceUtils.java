@@ -3,7 +3,7 @@ package com.plusub.lib.util;
 import android.content.Context;
 import android.view.animation.AnimationUtils;
 
-import com.plusub.lib.bean.ResType;
+import com.plusub.lib.model.ResType;
 
 import java.io.BufferedReader;
 import java.io.IOException;

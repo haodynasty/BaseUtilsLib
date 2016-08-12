@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="drop_down_list_header_default_text">點擊可以刷新</string>
-    <string name="drop_down_list_header_pull_text">下拉可以刷新</string>
-    <string name="drop_down_list_header_release_text">松開可以刷新</string>
-    <string name="drop_down_list_header_loading_text">加載中&#8230;</string>
-    <string name="drop_down_list_footer_default_text">更多</string>
-    <string name="drop_down_list_footer_loading_text">加載中&#8230;</string>
-    <string name="drop_down_list_footer_no_more_text">沒有更多了</string>
+    <string name="plusub_base_drop_down_list_header_default_text">點擊可以刷新</string>
+    <string name="plusub_base_drop_down_list_header_pull_text">下拉可以刷新</string>
+    <string name="plusub_base_drop_down_list_header_release_text">松開可以刷新</string>
+    <string name="plusub_base_drop_down_list_header_loading_text">加載中&#8230;</string>
+    <string name="plusub_base_drop_down_list_footer_default_text">更多</string>
+    <string name="plusub_base_drop_down_list_footer_loading_text">加載中&#8230;</string>
+    <string name="plusub_base_drop_down_list_footer_no_more_text">沒有更多了</string>
+    <string name="plusub_base_drop_down_update_at">最后刷新时间：</string>
+
+    <string name="plusub_base_app_upgrade_download_fail">下载失败</string>
+    <string name="plusub_base_app_upgrade_download_over">下载完成</string>
+    <string name="plusub_base_app_upgrade_download_begin">开始下载</string>
+    <string name="plusub_base_picture_read_failed">图片解析失败</string>
+    <string name="plusub_base_picture_wait_for_download">等待图片下载……</string>
 
 </resources>

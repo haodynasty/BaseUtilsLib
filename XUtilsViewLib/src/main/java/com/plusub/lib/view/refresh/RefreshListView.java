@@ -1,12 +1,5 @@
 package com.plusub.lib.view.refresh;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import com.plusub.lib.view.R;
-import com.plusub.lib.view.floatingview.ScrollDirectionListener;
-
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,12 +10,16 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
+
+import com.plusub.lib.view.R;
+import com.plusub.lib.view.floatingview.ScrollDirectionListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 刷新ListView
@@ -182,9 +179,9 @@ public class RefreshListView extends HandyListView {
 		/**bug:修复点击头部，抛出异常*/
 		mHeader.setOnClickListener(null);
 		
-        headerPullText = context.getString(R.string.drop_down_list_header_pull_text);
-        headerReleaseText = context.getString(R.string.drop_down_list_header_release_text);
-        headerLoadingText = context.getString(R.string.drop_down_list_header_loading_text);
+        headerPullText = context.getString(R.string.plusub_base_drop_down_list_header_pull_text);
+        headerReleaseText = context.getString(R.string.plusub_base_drop_down_list_header_release_text);
+        headerLoadingText = context.getString(R.string.plusub_base_drop_down_list_header_loading_text);
 
 		measureView(mHeader);
 		addHeaderView(mHeader);
@@ -384,7 +381,7 @@ public class RefreshListView extends HandyListView {
 			mState = DONE;
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd  HH:mm");
 			String date = format.format(new Date());
-			mHtvTime.setText(context.getString(R.string.drop_down_update_at) + date);
+			mHtvTime.setText(context.getString(R.string.plusub_base_drop_down_update_at) + date);
 			changeHeaderViewByState();
 		}
 		
@@ -528,9 +525,9 @@ public class RefreshListView extends HandyListView {
             return;
         }
 
-        footerDefaultText = context.getString(R.string.drop_down_list_footer_default_text);
-        footerLoadingText = context.getString(R.string.drop_down_list_footer_loading_text);
-        footerNoMoreText = context.getString(R.string.drop_down_list_footer_no_more_text);
+        footerDefaultText = context.getString(R.string.plusub_base_drop_down_list_footer_default_text);
+        footerLoadingText = context.getString(R.string.plusub_base_drop_down_list_footer_loading_text);
+        footerNoMoreText = context.getString(R.string.plusub_base_drop_down_list_footer_no_more_text);
 
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         footerLayout = (RelativeLayout)inflater.inflate(R.layout.include_pull_to_refreshing_footer, this, false);
@@ -563,7 +560,7 @@ public class RefreshListView extends HandyListView {
 
     /**
      * 设置加载更多view
-     * @param isOnBottomStyle
+     * @param isShowMoreBottomStyle
      */
     public void setOnBottomStyle(boolean isShowMoreBottomStyle) {
         if (this.isOnBottomStyle != isShowMoreBottomStyle) {
@@ -759,7 +756,6 @@ public class RefreshListView extends HandyListView {
     /**
      * set whether has more. if hasMore is false, onBottm will not be called when listView scroll to bottom
      * 
-     * @param hasMore
      */
     public void setNoMore() {
         this.hasMore = false;

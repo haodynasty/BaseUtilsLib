@@ -16,13 +16,11 @@
  */
 package com.plusub.lib.parser;
 
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.plusub.lib.util.CommException;
+import java.util.List;
 
 /**
  * json解析
@@ -32,13 +30,13 @@ import com.plusub.lib.util.CommException;
  */
 public interface JSONParser<T> {
 
-	public T build(JSONObject jsonObject) throws JSONException, CommException;
+	public T build(JSONObject jsonObject) throws JSONException;
 	
-	public List<T> buildList(JSONObject jsonObject) throws JSONException, CommException;
+	public List<T> buildList(JSONObject jsonObject) throws JSONException;
 	
-	public T build(JSONArray jsonArray) throws JSONException, CommException;
+	public T build(JSONArray jsonArray) throws JSONException;
 	
-	public List<T> buildList(JSONArray jsonArray) throws JSONException, CommException;
+	public List<T> buildList(JSONArray jsonArray) throws JSONException;
 	
 	/**
 	 * 检查错误（在接收到服务器返回数据之前，先判断返回数据是否正确，正确在使用）
