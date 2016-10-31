@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.plusub.lib.util.StringUtils;
+import com.plusub.lib.util.logger.Logger;
 
 /**
  * <p>Here is an example of subclassing:</p>
@@ -92,7 +93,8 @@ public class SimpleWebActivity extends BaseActivity {
 
 			public void onReceivedSslError(WebView view,
 					SslErrorHandler handler, android.net.http.SslError error) {
-				handler.proceed();
+				super.onReceivedSslError(view, handler, error);
+				Logger.e("SimpleWebActivity", "SSL Certificate Error " + error.getPrimaryError());
 			}
 
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {

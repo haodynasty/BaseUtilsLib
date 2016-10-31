@@ -1,5 +1,7 @@
 package com.plusub.lib.example.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.plusub.lib.activity.BaseFragment;
 import com.plusub.lib.adapter.FragmentPageAdapter;
 import com.plusub.lib.annotate.BindView;
+import com.plusub.lib.example.BuildConfig;
 import com.plusub.lib.example.MainApplication;
 import com.plusub.lib.example.R;
 import com.plusub.lib.example.ui.tab1.Tab1Fragment;
@@ -20,6 +23,8 @@ import com.plusub.lib.example.ui.tab2.Tab2Fragment;
 import com.plusub.lib.example.ui.tab3.Tab3Fragment;
 import com.plusub.lib.example.ui.tab4.Tab4Fragment;
 import com.plusub.lib.example.utils.ChannelUtil;
+import com.plusub.lib.example.utils.FirCheckUtils;
+import com.plusub.lib.service.AppUpgradeService;
 import com.plusub.lib.view.ScrollViewPager;
 import com.plusub.lib.view.ViewInjectUtils;
 
@@ -90,6 +95,8 @@ public class MainActivity extends ToolbarActivity {
 		} catch (ClassNotFoundException ignored) {
 			System.out.println("---alibaba pkg not used");
 		}
+
+		updateFirAppUpdate();
 	}
 
 
@@ -113,6 +120,37 @@ public class MainActivity extends ToolbarActivity {
 			default:
 				break;
 		}
+	}
+
+	private void updateFirAppUpdate(){
+		new FirCheckUtils(this).startCheckVersion(BuildConfig.FIR_TOKEN, new FirCheckUtils.OnVersionDownloadListener() {
+			@Override
+			public void onNewVersionGet(final FirCheckUtils.FirVersionBean versionBean) {
+				if (versionBean != null && versionBean.isUpdate()) {
+					AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+							.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+									Intent intent = new Intent(getApplicationContext(), AppUpgradeService.class);
+									intent.putExtra(AppUpgradeService.EXTRA_DOWLOAD_URL, versionBean.getInstallUrl());
+									startService(intent);
+								}
+							})
+							.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+								}
+							})
+							.setCancelable(true)
+							.setTitle("软件更新")
+							.setMessage("检测到测试版有更新:" + versionBean.getChangeLog() + "，是否立即更新？")
+							.create();
+					dialog.show();
+				}
+			}
+		});
 	}
 
 

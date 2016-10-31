@@ -2,14 +2,14 @@ package com.plusub.lib.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import com.plusub.lib.util.NetStateUtils;
 
 /**
  * 从web获取内容的dialog
@@ -90,7 +90,7 @@ public class WebDialog extends BaseDialog {
 			}
 			return;
 		}
-		if (NetStateUtils.getNetWorkConnectionType(mContext) == NetStateUtils.NetWorkState.NONE) {
+		if (!hasNetWorkConnection(mContext)) {
 			if (mOnWebDialogErrorListener != null) {
 				mOnWebDialogErrorListener.networkError();
 			}
@@ -98,7 +98,7 @@ public class WebDialog extends BaseDialog {
 		}
 		mWebView.getSettings().setJavaScriptEnabled(true);
 		if (isCache){
-			if (NetStateUtils.hasNetWorkConnection(this.mContext)){
+			if (hasNetWorkConnection(mContext)){
 				mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 			}else{
 				mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
@@ -124,5 +124,19 @@ public class WebDialog extends BaseDialog {
 		void urlError();
 
 		void networkError();
+	}
+
+	/**
+	 *
+	 * @return 是否有活动的网络连接
+	 */
+	private boolean hasNetWorkConnection(Context context) {
+		// 获取连接活动管理器
+		final ConnectivityManager connectivityManager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		// 获取链接网络信息
+		final NetworkInfo networkInfo = connectivityManager
+				.getActiveNetworkInfo();
+		return (networkInfo != null && networkInfo.isAvailable());
 	}
 }

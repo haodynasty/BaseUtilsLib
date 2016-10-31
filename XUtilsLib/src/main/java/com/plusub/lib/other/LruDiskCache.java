@@ -18,8 +18,6 @@ package com.plusub.lib.other;
 import com.plusub.lib.util.MD5Encryptor;
 import com.plusub.lib.util.logger.Logger;
 
-import org.apache.http.protocol.HTTP;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -232,7 +230,7 @@ public final class LruDiskCache implements Closeable {
                 cache.readJournal();
                 cache.processJournal();
                 cache.journalWriter = new BufferedWriter(
-                        new OutputStreamWriter(new FileOutputStream(cache.journalFile, true), HTTP.US_ASCII));
+                        new OutputStreamWriter(new FileOutputStream(cache.journalFile, true), "US-ASCII"));
                 return cache;
             } catch (Throwable journalIsCorrupt) {
                 Logger.e("DiskLruCache "
@@ -388,7 +386,7 @@ public final class LruDiskCache implements Closeable {
         Writer writer = null;
         try {
             writer = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(journalFileTmp), HTTP.US_ASCII));
+                    new OutputStreamWriter(new FileOutputStream(journalFileTmp), "US-ASCII"));
             writer.write(MAGIC);
             writer.write("\n");
             writer.write(VERSION);
@@ -420,7 +418,7 @@ public final class LruDiskCache implements Closeable {
         journalFileBackup.delete();
 
         journalWriter = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(journalFile, true), HTTP.US_ASCII));
+                new OutputStreamWriter(new FileOutputStream(journalFile, true), "US-ASCII"));
     }
 
     private static void deleteIfExists(File file) throws IOException {
@@ -764,7 +762,7 @@ public final class LruDiskCache implements Closeable {
     }
 
     private static String inputStreamToString(InputStream in) throws IOException {
-        return readFully(new InputStreamReader(in, HTTP.UTF_8));
+        return readFully(new InputStreamReader(in, "utf-8"));
     }
 
     /**
@@ -917,7 +915,7 @@ public final class LruDiskCache implements Closeable {
         public void set(int index, String value) throws IOException {
             Writer writer = null;
             try {
-                writer = new OutputStreamWriter(newOutputStream(index), HTTP.UTF_8);
+                writer = new OutputStreamWriter(newOutputStream(index), "utf-8");
                 writer.write(value);
             } finally {
                 try {
@@ -1115,7 +1113,7 @@ public final class LruDiskCache implements Closeable {
         private static final byte LF = (byte) '\n';
 
         private final InputStream in;
-        private final Charset charset = Charset.forName(HTTP.US_ASCII);
+        private final Charset charset = Charset.forName("US-ASCII");
 
         /*
          * Buffered data is stored in {@code buf}. As long as no exception occurs, 0 <= pos <= end

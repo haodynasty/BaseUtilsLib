@@ -1,9 +1,13 @@
 apply plugin: 'com.android.application'
-apply from:gradle.utilsGradle
+//集成fir.im发布
+apply plugin:'im.fir.plugin.gradle'
 
-initProperty()
-
-def today = new Date().format('yyyyMMdd');
+fir{
+    //必填 上传 fir.im apk 字段，否则无法上传 APP 到 fir.im
+    apiToken getLocalProperty("FIR_TOKEN")
+    //可选 上传fir.im 中显示的changelog
+    changeLog getLocalProperty("UPDATE_LOG")
+}
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION
@@ -14,13 +18,14 @@ android {
         minSdkVersion MIN_SDK_VERSION
         targetSdkVersion TARGET_SDK_VERSION
         versionCode 1
-        versionName VERSION_NAME
+        versionName "1.0"
         //dex突破65535的限制
         multiDexEnabled true
+        buildConfigField "String", "FIR_TOKEN", getLocalProperty("FIR_TOKEN_STRING")
         //在BuildConfig文件中生成bool字段AUTO_UPDATES默认为true
         buildConfigField "boolean", "AUTO_UPDATES", "true"
         //设置输出app默认前缀名称
-        project.ext.set("archivesBaseName", "XUtilsLibExample_v" + versionName + "_"+today);
+//        project.ext.set("archivesBaseName", "XUtilsLibExample_v" + versionName + "_"+today);
 
         //test
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
@@ -28,27 +33,23 @@ android {
 
     //签名配置
     signingConfigs {
-        debug {
+        release {
             //这样写就得把plusub_keystore.key文件放在项目app目录下，否则写实际路径
             //如/home/lippi/.android/debug.keystore
             //storeFile file("file://${project.gradle.debugKeystore}")
-            storeFile file(STORE_FILE)
-            storePassword STORE_PWD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PWD
-        }
-        release {
-            storeFile file(STORE_FILE)
-            storePassword STORE_PWD
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PWD
+            storeFile file(getLocalProperty("STORE_FILE"))
+            storePassword getLocalProperty("KEYSTORE_PASS")
+            keyAlias getLocalProperty("ALIAS_NAME")
+            keyPassword getLocalProperty("ALIAS_PASS")
         }
     }
 
     //构建配置
     buildTypes {
         debug {
-
+            //对齐优化设置为true，否则找不到该task (默认不写也是true)
+            zipAlignEnabled true
+            signingConfig signingConfigs.debug
         }
         release {
             minifyEnabled false //是否进行混淆
@@ -57,16 +58,15 @@ android {
             //混淆配置文件，proguard-rules.txt放置在app目录下，如果没有则写实际路径
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release //签名配置
-            //重命名release的输出app的名称
+
+            //自定义apk安装包名
             applicationVariants.all { variant ->
+                variant.mergedFlavor.versionCode = gitVersionCode()
+                variant.mergedFlavor.versionName = gitVersionTag()
                 variant.outputs.each { output ->
-                    if (output.outputFile != null && output.outputFile.name.endsWith('.apk')
-                            &&'release'.equals(variant.buildType.name)) {
-                        def apkFile = new File(
-                                output.outputFile.getParent(),
-                                "XUtilsLibExample_v${variant.versionName}_${today}_${variant.flavorName}.apk")
-                        output.outputFile = apkFile
-                    }
+                    output.outputFile = new File(
+                            output.outputFile.parent + "/${variant.buildType.name}",
+                            "XUtilsLibExample-${variant.buildType.name}-${variant.versionName}-${releaseTime()}.apk".toLowerCase())
                 }
             }
         }
@@ -83,7 +83,7 @@ android {
 //            versionCode 3
 //            versionName "3.0"
 //        }
-        "own"{}
+//        "own"{}
 //        "baidu"{}
 //        "wandoujia"{
 //            applicationId "com.plusub.wandoujia"
@@ -91,9 +91,9 @@ android {
     }
 
     //循环设置channelName名字，channelName是在manifest文件中定义的
-    productFlavors.all {flavor ->
-        flavor.manifestPlaceholders = [channelName: name]
-    }
+//    productFlavors.all {flavor ->
+//        flavor.manifestPlaceholders = [channelName: name]
+//    }
 
     //打包过滤文件
     packagingOptions {
@@ -111,14 +111,14 @@ android {
 
     //fresco的配置，Fresco支持五种 ABI（CPU类型）按需选择
     // rest of your app's logic，http://fresco-cn.org/docs/multiple-apks.html
-    splits {
-        abi {
-            enable true
-            reset()
-            include 'x86', 'x86_64', 'arm64-v8a', 'armeabi-v7a'
-            universalApk false
-        }
-    }
+//    splits {
+//        abi {
+//            enable true
+//            reset()
+//            include 'x86', 'x86_64', 'arm64-v8a', 'armeabi-v7a'
+//            universalApk false
+//        }
+//    }
 }
 
 //查找Class类型为JavaCompile的任务，并且设置该任务编码为utf-8
@@ -177,8 +177,13 @@ dependencies {
     //    compile(name: 'PlusubBaseViewLib-release', ext: 'aar')
     //2.依赖工程
     compile project(':XUtilsViewLib')
-    //依赖远程库
+    compile project(':XUtilsLib')
+    //3.依赖远程库，这个要upload to jcenter的时候，必须用jar放到libs目录
     //    compile 'com.plusub.lib:PlusubBaseViewLib:1.0.2@aar'
+
+    //4.直接依赖jar
+    //upload的时候必须把jar放置与libs中，使用远程依赖无法打包到aar中
+//    compile fileTree(dir: 'libs', include:'*.jar')
 }
 
 

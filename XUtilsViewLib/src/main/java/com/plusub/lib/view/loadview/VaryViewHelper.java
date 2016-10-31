@@ -74,8 +74,12 @@ public class VaryViewHelper implements IVaryViewHelper {
 			if (parent != null) {
 				parent.removeView(view);
 			}
-			parentView.removeViewAt(viewIndex);
-			parentView.addView(view, viewIndex, params);
+			if (viewIndex < parentView.getChildCount()){
+				parentView.removeViewAt(viewIndex);
+			}
+			if (viewIndex <= parentView.getChildCount()){
+				parentView.addView(view, viewIndex, params);
+			}
 		}
 	}
 

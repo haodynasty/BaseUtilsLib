@@ -6,9 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.widget.ImageView;
-
-import com.plusub.lib.util.DensityUtils;
 
 /**
  * 自定义控件，用于显示宽度和ImageView相同，高度自适应的图片显示模式.
@@ -63,8 +62,8 @@ public class ShowMaxImageView extends ImageView {
 
 			int resultHeight = (int) Math.max(mHeight, sizeHeight);
 
-			if (resultHeight >= DensityUtils.getScreenH((Activity) getContext())) {
-				resultHeight = DensityUtils.getScreenH((Activity) getContext()) / 3;
+			if (resultHeight >= getScreenH((Activity) getContext())) {
+				resultHeight = getScreenH((Activity) getContext()) / 3;
 			}
 
 			setMeasuredDimension(sizeWidth, resultHeight);
@@ -95,6 +94,13 @@ public class ShowMaxImageView extends ImageView {
 		} else {
 			return null;
 		}
+	}
+
+	private int getScreenH(Activity aty) {
+		DisplayMetrics dm = new DisplayMetrics();
+		aty.getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int h = dm.heightPixels;
+		return h;
 	}
 
 }

@@ -1,19 +1,15 @@
 apply plugin: 'com.android.library'
-apply from:gradle.utilsGradle
-
-initProperty()
-
-// 这个version是区分library版本的，因此当我们需要更新library时记得修改这个version
-version = PROJ_BASE_VERSION
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion COMPILE_SDK_VERSION
+    buildToolsVersion BUILD_TOOLS_VERSION as String
+
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 22
-        versionCode 1
-        versionName version
+        minSdkVersion MIN_SDK_VERSION
+        targetSdkVersion TARGET_SDK_VERSION
+        versionCode VERSION_CODE as int
+        versionName VERSION_NAME as String
+        resourcePrefix "plusub_base_"
     }
 
     buildTypes {
@@ -31,21 +27,18 @@ android {
 }
 
 tasks.withType(Javadoc){
-    println '========javadoc===='
     failOnError = false
 }
 
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.android.support:support-v4:24.0.0-beta1'
-    //eventbus
-    compile 'org.greenrobot:eventbus:3.0.0'
+    compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
     //http request lib
-    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
     //image lib
-    compile 'com.facebook.fresco:fresco:0.10.0'
+    compile "com.facebook.fresco:fresco:$FRESCO_VERSION"
     //rxandroid:https://github.com/ReactiveX/RxAndroid
     //ormlite
     //LeakCanary
@@ -54,5 +47,9 @@ dependencies {
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }
 
-//必须写在这下面，先加载android库初始化Android环境
-apply from:gradle.bintrayGradle
+if (isForUpload2Maven()) {
+    println ':library:include upload 2 maven methods'
+    apply from: 'https://raw.githubusercontent.com/haodynasty/JCenter/master/installv1.gradle'
+    apply from: 'https://raw.githubusercontent.com/haodynasty/JCenter/master/bintrayv1.gradle'
+    apply from: 'https://raw.githubusercontent.com/haodynasty/JCenter/master/license.gradle'
+}

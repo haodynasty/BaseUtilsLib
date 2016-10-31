@@ -143,7 +143,7 @@ bintray {
     pkg {
         repo = "maven"
         name = PROJ_NAME	//发布到JCenter上的项目名字
-        //desc = PROJ_DESCRIPTION
+        desc = PROJ_DESCRIPTION
         websiteUrl = PROJ_WEBSITEURL
         vcsUrl = PROJ_VCSURL
         licenses = ["Apache-2.0"]

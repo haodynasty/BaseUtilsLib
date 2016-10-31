@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.plusub.lib.annotate.BindView;
 import com.plusub.lib.example.R;
 import com.plusub.lib.example.ui.ToolbarActivity;
-import com.plusub.lib.util.ImageUtils;
+import com.plusub.lib.util.ImageUtil;
 import com.plusub.lib.util.StringUtils;
 import com.plusub.lib.util.ToastUtils;
 import com.plusub.lib.util.logger.Logger;
@@ -76,7 +76,7 @@ public class ImageSelectActivity extends ToolbarActivity {
                 imgPath = mImagePopupWin.getCropImgFilePath(data);
                 if (!StringUtils.isEmpty(imgPath)) {
                     mIvImage.setVisibility(View.VISIBLE);
-                    mIvImage.setImageBitmap(ImageUtils.getBitmapFromPath(imgPath));
+                    mIvImage.setImageBitmap(ImageUtil.getBitmapFromPath(imgPath));
                 }else{
                     mIvImage.setVisibility(View.VISIBLE);
                     ToastUtils.show(this, "获取图片失败");

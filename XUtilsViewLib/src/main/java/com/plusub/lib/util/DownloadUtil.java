@@ -17,7 +17,7 @@ import java.util.zip.GZIPInputStream;
  * @author blakequ Blakequ@gmail.com
  *
  */
-public class DownloadUtils {
+public class DownloadUtil {
     private static final int CONNECT_TIMEOUT = 10000;
     private static final int DATA_TIMEOUT = 40000;
     private final static int DATA_BUFFER = 8192;

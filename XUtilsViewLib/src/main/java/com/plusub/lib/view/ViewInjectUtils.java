@@ -20,12 +20,12 @@ package com.plusub.lib.view;
 import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.plusub.lib.util.logger.Logger;
 
 /**
  * 
@@ -114,7 +114,7 @@ public class ViewInjectUtils {
 	 */
 	public static void showLoadingDialog(Context context, String text) {
 		if (context instanceof Application) {
-			Logger.e("ViewInjectUtils", "传入的参数context不能是Application, 它无法attach to view");
+			Log.e("ViewInjectUtils", "传入的参数context不能是Application, 它无法attach to view");
 			return;
 		}
 		if (mLoadingDialog != null) {
@@ -133,7 +133,7 @@ public class ViewInjectUtils {
 	 */
 	public static void showLoadingDialogNotCancel(Context context, String text) {
 		if (context instanceof Application) {
-			Logger.e("ViewInjectUtils", "传入的参数context不能是Application, 它无法attach to view");
+			Log.e("ViewInjectUtils", "传入的参数context不能是Application, 它无法attach to view");
 			return;
 		}
 		if (mLoadingDialog != null) {

@@ -32,9 +32,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <meta-data
+    <!--<meta-data
         android:name="channel"
-        android:value="${channelName}"/>
+        android:value="${channelName}"/>-->
 
     <application
         android:name=".MainApplication"

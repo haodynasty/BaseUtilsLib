@@ -13,18 +13,17 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
-import com.plusub.lib.util.DownloadUtils;
-import com.plusub.lib.util.FileUtils;
-import com.plusub.lib.util.MD5Encryptor;
-import com.plusub.lib.util.StringUtils;
-import com.plusub.lib.util.ToastUtils;
-import com.plusub.lib.util.logger.Logger;
+import com.plusub.lib.util.DownloadUtil;
 import com.plusub.lib.view.R;
 
 import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * app升级服务, 使用前必须在Manifest中进行注册com.plusub.lib.service.AppUpgradeService
@@ -45,6 +44,8 @@ public class AppUpgradeService extends Service {
 
 	public static final int APP_VERSION_LATEST = 0;
     public static final int APP_VERSION_OLDER = 1;
+    private String[] strDigits = { "0", "1", "2", "3", "4", "5",
+            "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
     
     public static final String EXTRA_DOWLOAD_URL = "downloadUrl";
 
@@ -70,7 +71,7 @@ public class AppUpgradeService extends Service {
                 install(destFile);
                 break;
             case DOWNLOAD_FAIL:
-                ToastUtils.show(getApplicationContext(), R.string.plusub_base_app_upgrade_download_fail);
+                Toast.makeText(getApplicationContext(), R.string.plusub_base_app_upgrade_download_fail, Toast.LENGTH_SHORT).show();
                 mNotificationManager.cancel(mNotificationId);
                 break;
             default:
@@ -82,7 +83,7 @@ public class AppUpgradeService extends Service {
     };
     
     
-    private DownloadUtils.DownloadListener downloadListener = new DownloadUtils.DownloadListener() {
+    private DownloadUtil.DownloadListener downloadListener = new DownloadUtil.DownloadListener() {
         @Override
         public void downloading(int progress) {
         	//放慢刷新进度
@@ -119,17 +120,18 @@ public class AppUpgradeService extends Service {
 
         if (intent != null) {
             mDownloadUrl = intent.getStringExtra(EXTRA_DOWLOAD_URL);
-            if (!StringUtils.isEmpty(mDownloadUrl)){
+            if (mDownloadUrl != null && mDownloadUrl.length() > 0){
                 if (Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
-                    destDir = new File(FileUtils.getSDCardPath());
+                    String sdcardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                    destDir = new File(sdcardPath);
                     if (destDir.exists()) {
-                        File destFile = new File(destDir.getPath() + "/" + MD5Encryptor.GetMD5Code(mDownloadUrl));
+                        File destFile = new File(destDir.getPath() + "/" + getMD5Code(mDownloadUrl));
                         if (destFile.exists()) {
                             destFile.delete();
                         }
                     }
                 }else {
-                    Logger.e("AppUpgradeService", "AppUpgradeService sdcard not exist, can not download apk file");
+                    Log.e("AppUpgradeService", "AppUpgradeService sdcard not exist, can not download apk file");
                     stopSelf();
                     return super.onStartCommand(intent, flags, startId);
                 }
@@ -154,11 +156,11 @@ public class AppUpgradeService extends Service {
                 mNotificationManager.notify(mNotificationId, mNotification);
                 new AppUpgradeThread().start();
             }else{
-                Logger.e("AppUpgradeService", "AppUpgradeService download url is null");
+                Log.e("AppUpgradeService", "AppUpgradeService download url is null");
                 stopSelf();
             }
         }else{
-            Logger.e("AppUpgradeService", "AppUpgradeService intent is null");
+            Log.e("AppUpgradeService", "AppUpgradeService intent is null");
             stopSelf();
         }
 
@@ -170,16 +172,17 @@ public class AppUpgradeService extends Service {
         @Override
         public void run() {
             if (destDir == null) {
-                destDir = new File(FileUtils.getSDCardPath());
+                String sdcardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                destDir = new File(sdcardPath);
             }
             if (destDir.exists() || destDir.mkdirs()) {
-                destFile = new File(destDir.getPath() + "/" + MD5Encryptor.GetMD5Code(mDownloadUrl));
+                destFile = new File(destDir.getPath() + "/" + getMD5Code(mDownloadUrl));
                 if (destFile.exists() && destFile.isFile() && checkApkFile(destFile.getPath())) {
                     install(destFile);
                     stopSelf();
                 } else {
                     try {
-                        DownloadUtils.download(mDownloadUrl, destFile, false, downloadListener);
+                        DownloadUtil.download(mDownloadUrl, destFile, false, downloadListener);
                     } catch (Exception e) {
                         Message msg = mHandler.obtainMessage();
                         msg.what = DOWNLOAD_FAIL;
@@ -214,6 +217,45 @@ public class AppUpgradeService extends Service {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setDataAndType(uri, "application/vnd.android.package-archive");
         startActivity(intent);
+    }
+
+    /**
+     * 获取加密后的MD5字符串
+     * <p>Title: GetMD5Code
+     * <p>Description:
+     * @param strObj
+     * @return
+     */
+    private String getMD5Code(String strObj) {
+        String resultString = null;
+        try {
+            resultString = new String(strObj);
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            // md.digest() 该函数返回值为存放哈希值结果的byte数组
+            resultString = byteToString(md.digest(strObj.getBytes()));
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+        }
+        return resultString;
+    }
+
+    private String byteToString(byte[] bByte) {
+        StringBuffer sBuffer = new StringBuffer();
+        for (int i = 0; i < bByte.length; i++) {
+            sBuffer.append(byteToArrayString(bByte[i]));
+        }
+        return sBuffer.toString();
+    }
+
+    private String byteToArrayString(byte bByte) {
+        int iRet = bByte;
+        // System.out.println("iRet="+iRet);
+        if (iRet < 0) {
+            iRet += 256;
+        }
+        int iD1 = iRet / 16;
+        int iD2 = iRet % 16;
+        return strDigits[iD1] + strDigits[iD2];
     }
 
 }
